@@ -231,7 +231,7 @@ body.light .builder-file-tabs button.active{background:#111;color:#fff;border-co
     </div>
     <div class="builder-pane"><div class="builder-toolbar"><strong>Live preview</strong><span>Sandboxed preview</span></div><iframe class="builder-preview" id="builderPreview" title="Website live preview" sandbox="allow-scripts allow-forms"></iframe></div>
   </div>
-  <p class="builder-help">Describe a website or web app to generate HTML, CSS and JavaScript, then edit the files, preview, save privately to your account or export a standalone HTML file. Generated forms and account/payment flows are front-end demos until a backend is connected.</p>
+  <p class="builder-help">Describe a website or browser-based app. RiseverseHQ generates the project files, lets you edit and preview them, and saves projects privately to your account. Public deployment requires a secure hosting connection; backend services, payments and native mobile builds are separate production steps.</p>
   <p class="builder-status" id="builderStatus" role="status" aria-live="polite">Sign in to save projects to your account.</p>
 </section>
 
@@ -324,7 +324,16 @@ async function invokeRiseverseAI(payload){
   }
   throw new Error('Your session could not be refreshed. Please log in again.');
 }
-function isBuildRequest(text){const s=String(text||'').trim().toLowerCase();if(/\b(android|ios|native mobile)\b/i.test(s)&&!/\bweb app\b/i.test(s))return false;if(/^(how to|how do i|explain|teach me|what is|what are|write (a|an|the) (blog|article|post|essay)|summari[sz]e|compare)\b/i.test(s))return false;return /(\b(build|create|make|develop|design|generate|code|program|launch|implement)\b).{0,70}\b(website|web\s*site|web app|web application|app|application|landing page|online store|e-?commerce site)\b/i.test(s)||/\b(website|web\s*site|web app|web application|app|application|landing page|online store)\b.{0,35}\b(built|created|developed|generated|designed)\b/i.test(s)}
+function isBuildRequest(text){
+  const s=String(text||'').trim().toLowerCase();
+  if(!s)return false;
+  if(/\b(android|ios|iphone app|ipad app|native mobile)\b/.test(s)&&!/\bweb app\b/.test(s))return false;
+  if(/^(how to|how do i|explain|teach me|what is|what are|write (a|an|the) (blog|article|post|essay)|summari[sz]e|compare)\b/.test(s))return false;
+  const buildVerb=/\b(build|create|make|develop|design|generate|code|program|launch|implement|publish|deploy)\b/.test(s);
+  const product=/\b(website|web site|web app|web application|app|application|mobile app|landing page|online store|e-?commerce site|dashboard|saas platform)\b/.test(s);
+  const outcome=/\b(website|web site|web app|web application|app|application|landing page|online store|dashboard|saas platform)\b.{0,50}\b(built|created|developed|generated|designed|published|deployed)\b/.test(s);
+  return (buildVerb&&product)||outcome||/\b(i need|i want|build me|make me|create me)\b.{0,45}\b(website|web site|web app|app|application|dashboard|online store)\b/.test(s);
+}
 async function sendMessage(){
   const prompt=$('prompt').value.trim();if((!prompt&&!selectedImages.length)||busy)return;
   if(!currentUser){openAuth('login');return}

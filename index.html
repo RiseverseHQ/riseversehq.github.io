@@ -211,6 +211,36 @@ async function openChat(id){const {data,error}=await supabase.from('conversation
 async function saveChat(){if(!currentUser||!messages.length)return;const title=(messages.find(m=>m.role==='user')?.content||'New chat').slice(0,60);const payload={user_id:currentUser.id,title,messages,updated_at:new Date().toISOString()};let result;if(currentChatId)result=await supabase.from('conversations').update(payload).eq('id',currentChatId).eq('user_id',currentUser.id).select('id').single();else result=await supabase.from('conversations').insert(payload).select('id').single();if(result.error){$('chatStatus').textContent='Reply received, but saving failed';return}currentChatId=result.data.id;await loadHistory();$('chatStatus').textContent='Saved to your account'}
 function imagePayload(dataUrl){const match=String(dataUrl).match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/);return match?{mimeType:match[1],data:match[2]}:null}
 function updateComposerState(){$('send').disabled=!currentUser||busy||(!$('prompt').value.trim()&&!selectedImages.length)}
+async function invokeRiseverseAI(payload){
+  let {data:{session}}=await supabase.auth.getSession();
+  if(!session?.access_token)throw new Error('Your sign-in session has expired. Please log in again.');
+  const endpoint='https://fxvjcikzkwdudpbgwoah.supabase.co/functions/v1/riseverse-ai';
+  let refreshed=false;
+  for(let attempt=0;attempt<2;attempt++){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),110000);
+    try{
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_dXmTxa_fWxGlvjBiLn5e8w_KiLlWVY6','Authorization':'Bearer '+session.access_token},body:JSON.stringify(payload),signal:controller.signal,cache:'no-store'});
+      const result=await response.json().catch(()=>({}));
+      if(response.status===401&&!refreshed){
+        refreshed=true;
+        const refresh=await supabase.auth.refreshSession();
+        if(refresh.error||!refresh.data.session)throw new Error('Your sign-in session expired. Please log in again.');
+        session=refresh.data.session;
+        continue;
+      }
+      if(!response.ok)throw new Error(result.error||result.detail||('AI service returned HTTP '+response.status));
+      if(typeof result.reply!=='string'||!result.reply.trim())throw new Error(result.error||'The AI service returned an empty response.');
+      return result;
+    }catch(error){
+      if(error?.name==='AbortError')throw new Error('The AI request took too long. Your message is saved; please try again.');
+      if(attempt===0&&(!(error instanceof Error)||error.name==='TypeError')){await new Promise(resolve=>setTimeout(resolve,900));continue;}
+      if(error instanceof TypeError)throw new Error('Connection to RiseverseHQ was interrupted. Check your internet connection and try again.');
+      throw error;
+    }finally{clearTimeout(timeout)}
+  }
+  throw new Error('Your session could not be refreshed. Please log in again.');
+}
 async function sendMessage(){
   const prompt=$('prompt').value.trim();if((!prompt&&!selectedImages.length)||busy)return;
   if(!currentUser){openAuth('login');return}
@@ -223,13 +253,8 @@ async function sendMessage(){
     await saveChat();
     const history=messages.slice(0,-1).slice(-12).map(m=>({role:m.role,content:m.content,images:(m.images||[]).map(imagePayload).filter(Boolean)}));
     const images=outgoingImages.map(imagePayload).filter(Boolean);
-    const {data,error}=await supabase.functions.invoke('riseverse-ai',{body:{message:prompt,history,images}});
-    if(error){
-      let detail=error.message||'Please try again in a moment.';
-      try{const response=error.context?.clone?error.context.clone():error.context;if(response?.json){const body=await response.json();detail=body.error||body.detail||detail}}catch{}
-      throw new Error(detail);
-    }
-    const reply=data?.reply;if(!reply)throw new Error(data?.error||'The AI service returned an empty response.');
+    const data=await invokeRiseverseAI({message:prompt,history,images});
+    const reply=data.reply;
     pending.remove();addMessage('assistant',reply);await saveChat();
   }catch(err){
     pending.remove();const msg=err?.message||'Please try again in a moment.';

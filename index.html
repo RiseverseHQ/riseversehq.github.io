@@ -9,6 +9,43 @@
 :root{color-scheme:dark;--bg:#212121;--side:#171717;--panel:#2f2f2f;--line:#3c3c3c;--text:#f4f4f4;--muted:#aaa;--accent:#10a37f}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.app{display:flex;min-height:100vh}.sidebar{width:260px;background:var(--side);padding:18px 12px;display:flex;flex-direction:column;gap:12px;border-right:1px solid #242424}.brand{font-size:19px;font-weight:750;letter-spacing:-.5px;padding:7px 10px}.brand span{color:#63d7b2}.newchat,.side-link{width:100%;display:flex;align-items:center;gap:10px;border:1px solid #454545;background:transparent;color:var(--text);padding:11px 12px;border-radius:10px;text-align:left}.side-link{border-color:transparent;color:#c8c8c8}.newchat:hover,.side-link:hover{background:#292929}.side-label{font-size:12px;color:#777;padding:14px 10px 2px}.side-bottom{margin-top:auto}.profile{display:flex;align-items:center;gap:9px;padding:12px 9px;border-top:1px solid #333;color:#ddd;font-size:13px}.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#326c5b;font-weight:700}.main{flex:1;min-width:0;display:flex;flex-direction:column;min-height:100vh}.topbar{height:60px;display:flex;align-items:center;justify-content:flex-end;padding:0 26px;gap:10px}.topbar button{border-radius:9px;padding:9px 14px;font-weight:600}.login{background:transparent;border:1px solid #555;color:white}.signup,.primary{background:#fff;color:#171717;border:1px solid white}.content{width:min(780px,calc(100% - 36px));margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:45px 0 80px}.mark{width:48px;height:48px;border:1px solid #555;border-radius:16px;display:grid;place-items:center;font-size:23px;margin-bottom:22px;background:#292929}.chatlog{width:100%;display:flex;flex-direction:column;gap:14px;margin:8px 0 20px}.bubble{max-width:88%;padding:13px 16px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.user{align-self:flex-end;background:#285b4e}.bubble.assistant{align-self:flex-start;background:#303030;border:1px solid #454545}.bubble.pending{opacity:.7}.history{display:flex;flex-direction:column;gap:5px}.history button{background:transparent;border:0;color:#bbb;text-align:left;padding:8px 10px;border-radius:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.history button:hover{background:#292929}.content h1{font-size:clamp(28px,4vw,38px);letter-spacing:-1.3px;margin:0 0 8px;text-align:center}.sub{color:var(--muted);margin:0 0 30px;text-align:center}.composer{width:100%;background:#2f2f2f;border:1px solid #505050;border-radius:24px;padding:14px 16px 12px;box-shadow:0 8px 35px #0002}.composer textarea{display:block;width:100%;border:0;outline:0;resize:vertical;min-height:54px;max-height:180px;background:transparent;color:white;padding:4px;font-size:16px}.composer textarea::placeholder{color:#999}.compose-bottom{display:flex;justify-content:space-between;align-items:center;color:#999;font-size:12px}.compose-bottom button{border:0;background:#555;color:#aaa;border-radius:50%;width:34px;height:34px;font-size:19px}.compose-bottom button:disabled{opacity:.5;cursor:not-allowed}.quick{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:18px}.chip{background:transparent;color:#ddd;border:1px solid #4a4a4a;border-radius:20px;padding:8px 13px;font-size:13px}.chip:hover{background:#303030}.status{margin-top:24px;color:#929292;font-size:12px;text-align:center;max-width:560px}.footer{padding:15px;text-align:center;color:#777;font-size:11px}.footer a{color:#999;text-decoration:none;margin:0 7px}.mobile-menu{display:none;background:transparent;border:0;color:white;font-size:22px}.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:18px;z-index:5}.modal.open{display:grid}.dialog{width:min(420px,100%);background:#252525;border:1px solid #484848;border-radius:18px;padding:26px;box-shadow:0 20px 70px #0008}.dialog h2{margin:0 0 6px;font-size:23px}.dialog p{color:#aaa;font-size:13px;margin:0 0 18px}.dialog label{display:block;font-size:13px;color:#ddd;margin:12px 0 6px}.dialog input{width:100%;padding:12px;border-radius:9px;border:1px solid #555;background:#171717;color:white}.dialog .primary{width:100%;border-radius:9px;padding:12px;margin-top:18px;font-weight:700}.switch{background:none;border:0;color:#7bd8b8;padding:12px 0 0}.close{float:right;background:none;border:0;color:#aaa;font-size:22px}.message{min-height:18px;color:#9ee4c9;font-size:13px;margin-top:12px}.message.error{color:#ffaaa8}.signed{font-size:12px;color:#ccc}.hide{display:none!important}
 @media(max-width:760px){.sidebar{display:none;position:fixed;z-index:4;inset:0 auto 0 0;width:270px;box-shadow:10px 0 50px #0008}.sidebar.show{display:flex}.mobile-menu{display:block;margin-right:auto}.topbar{padding:0 14px}.content{padding:35px 0 55px}.brand{padding-left:8px}}
+
+/* RiseverseHQ monochrome light and dark themes */
+body.light{color-scheme:light;background:#fff;color:#111;--bg:#fff;--side:#f7f7f7;--panel:#fff;--line:#e5e5e5;--text:#111;--muted:#666;--accent:#111}
+body.light .sidebar{background:#f7f7f7;border-right-color:#e5e5e5}
+body.light .brand span{color:#111}
+body.light .newchat,body.light .side-links{border-color:#ddd;color:#111}
+body.light .newchat:hover,body.light .side-link:hover,body.light .history button:hover{background:#eaeaea}
+body.light .side-link{color:#333}
+body.light .side-label{color:#666}
+body.light .profile{border-top-color:#ddd;color:#333}
+body.light .avatar{background:#222;color:#fff}
+body.light .topbar button{border-color:#ccc;color:#111;background:#fff}
+body.light .content{color:#111}
+body.light .sub{color:#666}
+body.light .bubble.user{background:#ededed;color:#111}
+body.light .bubble.assistant{background:#f7f7f7;color:#111;border-color:#e5e5e5}
+body.light .history button{color:#444}
+body.light .compose{background:#fff;border-color:#ccc;box-shadow:0 8px 30px #0000000a}
+body.light .composer textarea{color:#111}
+body.light .composer textarea::placeholder{color:#777}
+body.light .compose-bottom{color:#666}
+body.light .compose-bottom button{background:#111;color:#fff}
+body.light .chip{border-color:#ccc;color:#222}
+body.light .chip:hover{background:#eee}
+body.light .status,body.light .footer{color:#666}
+body.light .footer a{color:#555}
+body.light .modal{background:#0006}
+body.light .dialog{background:#fff;border-color:#ddd;color:#111;box-shadow:0 20px 70px #0002}
+body.light .dialog p,body.light .dialog label{color:#555}
+body.light .dialog input{background:#fff;color:#111;border-color:#bbb}
+body.light .switch{color:#222}
+body.light .message{color:#555}
+body.light .message.error{color:#a11}
+.theme-toggle{border:1px solid #555;border-radius:9px;padding:9px 12px;background:transparent;color:inherit;font-size:13px;font-weight:600}
+body.light .theme-toggle{border-color:#bbb;background:#fff;color:#111}
+@media(max-width:760px){.theme-toggle{padding:8px 10px}}
+
 </style>
 </head>
 <body>
@@ -24,7 +61,7 @@
 <div class="side-bottom"><div class="profile"><div class="avatar">R</div><span id="sideUser">Guest account</span></div></div>
 </aside>
 <main class="main">
-<header class="topbar"><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><span class="signed hide" id="signedLabel"></span><button class="login" id="loginBtn">Log in</button><button class="signup" id="signupBtn">Sign up</button><button class="login hide" id="logoutBtn">Log out</button></header>
+<header class="topbar"><button class="theme-toggle" id="themeToggle" type="button">Light mode</button><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><span class="signed hide" id="signedLabel"></span><button class="login" id="loginBtn">Log in</button><button class="signup" id="signupBtn">Sign up</button><button class="login hide" id="logoutBtn">Log out</button></header>
 <section class="content">
 <div class="mark">✳</div>
 <h1 id="greeting">What would you like to create?</h1>
@@ -65,5 +102,25 @@ $('menu').onclick=()=>$('sidebar').classList.toggle('show');$('newChat').onclick
 $('send').onclick=sendMessage;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});$('prompt').addEventListener('input',()=>{$('send').disabled=!currentUser||busy||!$('prompt').value.trim()});
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{const tool=b.dataset.tool;$('prompt').placeholder=tool+' — describe what you need…';$('prompt').focus();$('sidebar').classList.remove('show')});
 document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=()=>{$('prompt').value=b.dataset.prompt;$('send').disabled=!currentUser;$('prompt').focus()});
+
+// Persist the user's selected black-and-white appearance
+const themeToggle = $('themeToggle');
+function applyTheme(theme){
+  const light = theme === 'light';
+  document.body.classList.toggle('light', light);
+  if(themeToggle){
+    themeToggle.textContent = light ? 'Dark mode' : 'Light mode';
+    themeToggle.setAttribute('aria-pressed', String(light));
+    themeToggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+  }
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#ffffff' : '#000000');
+}
+applyTheme(localStorage.getItem('riseverse-theme') === 'light' ? 'light' : 'dark');
+themeToggle?.addEventListener('click',()=>{
+  const next = document.body.classList.contains('light') ? 'dark' : 'light';
+  localStorage.setItem('riseverse-theme', next);
+  applyTheme(next);
+});
+
 </script>
 </body></html>

@@ -121,6 +121,30 @@ body.light .history-item .history-delete:hover{background:#e3e3e3}
 @media(max-width:760px){.compose-bottom{flex-wrap:wrap}.compose-bottom #chatStatus{order:3;flex-basis:100%;text-align:left}.message-image{max-width:100%}.tool-button{width:32px;height:32px}}
 
 .auth-providers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.provider{border:1px solid #555;background:transparent;color:inherit;border-radius:9px;padding:11px 8px;font-size:12px;cursor:pointer}.provider:first-child{grid-column:1/-1}.provider small,.auth-links small{display:block;color:#999;font-size:10px;margin-top:3px}.auth-divider{display:flex;align-items:center;gap:10px;color:#999;font-size:11px;margin:12px 0}.auth-divider:before,.auth-divider:after{content:'';height:1px;background:#555;flex:1}.auth-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.auth-note{font-size:11px!important;color:#999!important;margin:12px 0 0!important}.provider:hover{background:#333}.auth-links .switch{font-size:12px}body.light .provider{border-color:#ccc}body.light .provider:hover{background:#eee}body.light .auth-divider:before,body.light .auth-divider:after{background:#ddd}
+
+/* First Developer Studio prototype */
+.builder-workspace{width:min(1440px,calc(100% - 32px));margin:0 auto;padding:18px 0 36px;flex:1;min-height:0}
+.builder-workspace.hide{display:none!important}
+.builder-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.builder-head h1{font-size:23px;margin:0 auto 0 0;letter-spacing:-.5px}
+.builder-head button,.builder-head input,.builder-toolbar button,.builder-toolbar select{border:1px solid #555;background:transparent;color:inherit;border-radius:8px;padding:9px 12px}
+.builder-head input{width:min(260px,48vw)}
+.builder-head .builder-primary{background:#fff;color:#111;border-color:#fff;font-weight:700}
+.builder-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);gap:12px;min-height:560px;height:calc(100vh - 190px)}
+.builder-pane{min-width:0;display:flex;flex-direction:column;border:1px solid #444;border-radius:12px;overflow:hidden;background:#191919}
+.builder-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid #444;font-size:12px;color:#aaa}
+.builder-toolbar strong{color:inherit;margin-right:auto}
+.builder-editor{width:100%;flex:1;min-height:420px;resize:none;border:0;outline:0;background:#101010;color:#e8e8e8;padding:16px;font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}
+.builder-preview{width:100%;height:100%;flex:1;min-height:420px;border:0;background:#fff}
+.builder-help{font-size:12px;color:#999;margin:10px 2px 0}
+.builder-status{font-size:12px;color:#999;min-height:18px;margin:8px 2px}
+body.light .builder-pane{background:#fff;border-color:#ddd}
+body.light .builder-toolbar{border-color:#ddd}
+body.light .builder-editor{background:#f7f7f7;color:#171717}
+body.light .builder-head button,body.light .builder-head input,body.light .builder-toolbar button,body.light .builder-toolbar select{border-color:#ccc;color:#111;background:#fff}
+body.light .builder-head .builder-primary{background:#111;color:#fff;border-color:#111}
+@media(max-width:850px){.builder-grid{grid-template-columns:1fr;height:auto}.builder-pane{min-height:390px}.builder-editor,.builder-preview{min-height:390px}.builder-workspace{padding-top:8px}.builder-head h1{width:100%;margin-bottom:4px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -132,6 +156,7 @@ body.light .history-item .history-delete:hover{background:#e3e3e3}
 <button class="newchat" id="newChat">＋ <span>New chat</span></button>
 <div class="side-label">RECENT CHATS</div><div class="history" id="historyList"></div><div class="side-label">YOUR WORKSPACE</div>
 <button class="side-link" data-tool="AI chat">✳ <span>AI assistant</span></button>
+<button class="side-link" id="openDeveloperStudio">⌘ <span>Developer Studio</span></button>
 <button class="side-link" data-tool="Writing studio">▤ <span>Writing studio</span></button>
 <button class="side-link" data-tool="Video ideas">▹ <span>Video ideas</span></button>
 <button class="side-link" data-tool="Learning hub">⌘ <span>Learning hub</span></button>
@@ -139,7 +164,7 @@ body.light .history-item .history-delete:hover{background:#e3e3e3}
 </aside>
 <main class="main">
 <header class="topbar"><button class="theme-toggle" id="themeToggle" type="button">Light mode</button><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><span class="signed hide" id="signedLabel"></span><button class="login" id="loginBtn">Log in</button><button class="signup" id="signupBtn">Sign up</button><button class="login hide" id="logoutBtn">Log out</button></header>
-<section class="content">
+<section class="content" id="content">
 <div class="mark">✳</div>
 <h1 id="greeting">What would you like to create?</h1>
 <p class="sub">A simpler space to think, write, learn and build.</p>
@@ -159,6 +184,30 @@ body.light .history-item .history-delete:hover{background:#e3e3e3}
 <div class="quick"><button class="chip" data-prompt="Give me ideas for a short video">▹ Video ideas</button><button class="chip" data-prompt="Help me write a clear and engaging post">✎ Write something</button><button class="chip" data-prompt="Teach me a useful new skill step by step">⌘ Learn something</button><button class="chip" data-prompt="Help me plan my next project">＋ Plan a project</button></div>
 <p class="status" id="statusNote">AI responses are generated by Google Gemini. Avoid sharing passwords, financial details, or other sensitive information.</p>
 </section>
+
+<section class="builder-workspace hide" id="builderWorkspace" aria-label="Developer Studio">
+  <div class="builder-head">
+    <button type="button" id="backToChat">← AI assistant</button>
+    <h1>Developer Studio</h1>
+    <input id="builderProjectName" maxlength="100" value="My first website" aria-label="Project name">
+    <button type="button" id="newBuilderProject">New project</button>
+    <button type="button" id="saveBuilderProject" class="builder-primary">Save project</button>
+    <button type="button" id="downloadBuilderProject">Export HTML</button>
+  </div>
+  <div class="builder-toolbar">
+    <strong>My projects</strong>
+    <select id="builderProjectList" aria-label="Load saved project"><option value="">Choose a saved project…</option></select>
+    <button type="button" id="refreshBuilderProjects">Refresh</button>
+    <button type="button" id="deleteBuilderProject">Delete project</button>
+  </div>
+  <div class="builder-grid">
+    <div class="builder-pane"><div class="builder-toolbar"><strong>index.html · Code editor</strong><button type="button" id="resetBuilderStarter">Load starter</button></div><textarea class="builder-editor" id="builderCode" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Website HTML code"></textarea></div>
+    <div class="builder-pane"><div class="builder-toolbar"><strong>Live preview</strong><span>Sandboxed preview</span></div><iframe class="builder-preview" id="builderPreview" title="Website live preview" sandbox="allow-scripts allow-forms"></iframe></div>
+  </div>
+  <p class="builder-help">Edit the HTML on the left to see the result on the right. Your saved projects are private to your signed-in RiseverseHQ account. Export downloads a standalone HTML file.</p>
+  <p class="builder-status" id="builderStatus" role="status" aria-live="polite">Sign in to save projects to your account.</p>
+</section>
+
 <footer class="footer">© 2026 RiseverseHQ · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a> · <a href="mailto:riseversehq@gmail.com">Contact</a></footer>
 </main>
 </div>
@@ -306,6 +355,32 @@ themeToggle?.addEventListener('click',()=>{
   localStorage.setItem('riseverse-theme', next);
   applyTheme(next);
 });
+
+
+// Developer Studio: first HTML website-builder prototype.
+const starterWebsite = '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>My first website</title>\n  <style>\n    body { font-family: system-ui, sans-serif; margin: 0; padding: 48px 24px; color: #202020; background: #f5f5f5; }\n    main { max-width: 760px; margin: 8vh auto; padding: 40px; background: white; border-radius: 18px; box-shadow: 0 12px 40px #0001; }\n    a, button { color: white; background: #111; padding: 12px 18px; border-radius: 8px; text-decoration: none; border: 0; }\n  </style>\n</head>\n<body>\n  <main>\n    <h1>Welcome to my website</h1>\n    <p>This page was created in RiseverseHQ Developer Studio.</p>\n    <a href="mailto:hello@example.com">Contact me</a>\n  </main>\n</body>\n</html>';
+let currentBuilderProjectId = null;
+let builderProjectsCache = [];
+const builderEl = id => document.getElementById(id);
+function builderStatus(message, isError=false){const el=builderEl('builderStatus');if(el){el.textContent=message;el.style.color=isError?'#e88':'var(--muted)'}}
+function renderBuilderPreview(){const frame=builderEl('builderPreview');if(frame)frame.srcdoc=builderEl('builderCode').value||'<!doctype html><html><body></body></html>'}
+function startNewBuilderProject(){currentBuilderProjectId=null;builderEl('builderProjectName').value='My first website';builderEl('builderCode').value=starterWebsite;builderEl('builderProjectList').value='';renderBuilderPreview();builderStatus('New project ready. Save it to keep it in your account.')}
+function openBuilderWorkspace(){if(!currentUser){openAuth('login');builderStatus('Please log in to open your private Developer Studio.');return}builderEl('content').classList.add('hide');builderEl('builderWorkspace').classList.remove('hide');builderEl('sidebar').classList.remove('show');loadBuilderProjects();if(!builderEl('builderCode').value)startNewBuilderProject();}
+async function loadBuilderProjects(){if(!currentUser)return;builderStatus('Loading your saved projects…');const {data,error}=await supabase.from('builder_projects').select('id,name,project_type,files,updated_at').eq('user_id',currentUser.id).order('updated_at',{ascending:false}).limit(50);if(error){builderStatus('Could not load projects: '+error.message,true);return}builderProjectsCache=data||[];const select=builderEl('builderProjectList');select.innerHTML='<option value="">Choose a saved project…</option>';builderProjectsCache.forEach(project=>{const option=document.createElement('option');option.value=project.id;option.textContent=project.name;select.appendChild(option)});builderStatus(builderProjectsCache.length?'Loaded '+builderProjectsCache.length+' saved project(s).':'No saved projects yet. Create your first website.');}
+async function saveBuilderProject(){if(!currentUser){builderStatus('Log in before saving a project.',true);return}const name=builderEl('builderProjectName').value.trim();if(!name){builderStatus('Enter a project name first.',true);return}const payload={user_id:currentUser.id,name,project_type:'website',files:{'index.html':builderEl('builderCode').value}};builderEl('saveBuilderProject').disabled=true;builderStatus('Saving your project securely…');try{let result;if(currentBuilderProjectId){result=await supabase.from('builder_projects').update(payload).eq('id',currentBuilderProjectId).eq('user_id',currentUser.id).select('id').single()}else{result=await supabase.from('builder_projects').insert(payload).select('id').single()}if(result.error)throw result.error;currentBuilderProjectId=result.data.id;await loadBuilderProjects();builderEl('builderProjectList').value=currentBuilderProjectId;builderStatus('Project saved to your RiseverseHQ account.')}catch(error){builderStatus('Save failed: '+(error.message||'Unknown error'),true)}finally{builderEl('saveBuilderProject').disabled=false}}
+async function loadSelectedBuilderProject(){const id=builderEl('builderProjectList').value;if(!id)return;const project=builderProjectsCache.find(item=>item.id===id);if(!project)return;currentBuilderProjectId=project.id;builderEl('builderProjectName').value=project.name;builderEl('builderCode').value=project.files?.['index.html']||starterWebsite;renderBuilderPreview();builderStatus('Opened '+project.name+'.')}
+async function deleteBuilderProject(){if(!currentUser||!currentBuilderProjectId){builderStatus('Choose a saved project before deleting.',true);return}if(!confirm('Delete this saved project? This cannot be undone.'))return;const {error}=await supabase.from('builder_projects').delete().eq('id',currentBuilderProjectId).eq('user_id',currentUser.id);if(error){builderStatus('Delete failed: '+error.message,true);return}startNewBuilderProject();await loadBuilderProjects();builderStatus('Project deleted.')}
+function exportBuilderProject(){const blob=new Blob([builderEl('builderCode').value],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(builderEl('builderProjectName').value.trim()||'riseverse-website').replace(/[^a-z0-9-_]+/gi,'-').toLowerCase()+'.html';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);builderStatus('HTML file exported to your device.')}
+builderEl('openDeveloperStudio').addEventListener('click',openBuilderWorkspace);
+builderEl('backToChat').addEventListener('click',()=>{builderEl('builderWorkspace').classList.add('hide');builderEl('content').classList.remove('hide')});
+builderEl('builderCode').addEventListener('input',renderBuilderPreview);
+builderEl('newBuilderProject').addEventListener('click',startNewBuilderProject);
+builderEl('resetBuilderStarter').addEventListener('click',()=>{if(confirm('Replace the current editor contents with the starter website?'))startNewBuilderProject()});
+builderEl('saveBuilderProject').addEventListener('click',saveBuilderProject);
+builderEl('builderProjectList').addEventListener('change',loadSelectedBuilderProject);
+builderEl('refreshBuilderProjects').addEventListener('click',loadBuilderProjects);
+builderEl('deleteBuilderProject').addEventListener('click',deleteBuilderProject);
+builderEl('downloadBuilderProject').addEventListener('click',exportBuilderProject);
 
 </script>
 </body></html>

@@ -324,7 +324,7 @@ async function invokeRiseverseAI(payload){
   }
   throw new Error('Your session could not be refreshed. Please log in again.');
 }
-function isBuildRequest(text){const s=String(text||'').trim().toLowerCase();if(/^(how to|how do i|explain|teach me|what is|what are|write (a|an|the) (blog|article|post|essay)|summari[sz]e|compare)\b/i.test(s))return false;return /(\b(build|create|make|develop|design|generate|code|program|launch|implement)\b).{0,70}\b(website|web\s*site|web app|web application|app|application|landing page|online store|e-?commerce site)\b/i.test(s)||/\b(website|web\s*site|web app|web application|app|application|landing page|online store)\b.{0,35}\b(built|created|developed|generated|designed)\b/i.test(s)}
+function isBuildRequest(text){const s=String(text||'').trim().toLowerCase();if(/\b(android|ios|native mobile)\b/i.test(s)&&!/\bweb app\b/i.test(s))return false;if(/^(how to|how do i|explain|teach me|what is|what are|write (a|an|the) (blog|article|post|essay)|summari[sz]e|compare)\b/i.test(s))return false;return /(\b(build|create|make|develop|design|generate|code|program|launch|implement)\b).{0,70}\b(website|web\s*site|web app|web application|app|application|landing page|online store|e-?commerce site)\b/i.test(s)||/\b(website|web\s*site|web app|web application|app|application|landing page|online store)\b.{0,35}\b(built|created|developed|generated|designed)\b/i.test(s)}
 async function sendMessage(){
   const prompt=$('prompt').value.trim();if((!prompt&&!selectedImages.length)||busy)return;
   if(!currentUser){openAuth('login');return}

@@ -203,6 +203,56 @@ body.light .settings-section{border-top-color:#e1e8e2}body.light .settings-secti
 @media(max-width:420px){.settings-trigger span{display:none}.theme-toggle{font-size:10px;padding:7px 8px}.topbar{gap:5px}.login,.signup{padding:7px 8px!important}.appearance-options{grid-template-columns:1fr}.content{width:calc(100% - 24px)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
+
+
+/* Blue chat identity and ordered workspace navigation */
+:root{--accent:#2f80ed;--accent-strong:#1769d2}
+body{background:#101010}
+.sidebar{background:#080808;border-right-color:#242424;gap:10px}
+.brand{color:#f7f7f7;padding-bottom:14px}
+.brand span{color:#69a8ff}
+.newchat{display:flex;align-items:center;gap:10px;background:#2f80ed;border:1px solid #2f80ed;color:#fff;border-radius:999px;padding:12px 15px;font-weight:650;box-shadow:0 5px 18px #2f80ed25}
+.newchat:hover{background:#176fd8;border-color:#176fd8}
+.newchat-icon{font-size:20px;line-height:1}
+.side-label{color:#858585;font-size:11px;letter-spacing:.09em;padding:16px 10px 5px}
+.workspace-nav{display:flex;flex-direction:column;gap:3px}
+.side-link{color:#d1d1d1;border:0;border-radius:9px;padding:10px 12px;text-align:left}
+.side-link.active{background:#222;color:#fff}
+.side-link:hover,.history button:hover{background:#202020}
+.recent-label{padding-top:18px}
+.history{min-height:0;overflow-y:auto;overscroll-behavior:contain;gap:3px;scrollbar-width:thin;scrollbar-color:#444 transparent}
+.history button{color:#c9c9c9;padding:9px 10px;border-radius:8px;font-size:13px}
+.side-bottom{margin-top:auto;padding-top:10px;border-top:1px solid #242424}
+.side-bottom .settings-trigger{width:100%;justify-content:flex-start;margin:0 0 8px;color:#cfcfcf;border:0;border-radius:9px;padding:10px 12px}
+.side-bottom .settings-trigger:hover{background:#202020}
+.profile{border-top:0;padding:9px 10px 4px;color:#ddd}
+.avatar{background:#2f80ed;color:#fff}
+.main{background:#101010}
+.topbar{background:rgba(16,16,16,.92);border-bottom-color:#252525}
+.bubble.user{background:#2f80ed!important;border:1px solid #2f80ed!important;color:#fff!important;border-radius:18px 18px 5px 18px}
+.composer{background:#1b1b1b;border-color:#414141}
+.composer:focus-within{border-color:#2f80ed;box-shadow:0 0 0 3px #2f80ed22,0 18px 55px #0005}
+.compose-bottom button:not(:disabled){background:#2f80ed;color:#fff}
+.compose-bottom button:disabled{background:#414141;color:#aaa}
+.tool-button{border-color:#555;color:#eee}
+.settings-trigger{color:#ddd}
+body.light .sidebar{background:#f7f7f7;border-right-color:#e4e4e4}
+body.light .brand{color:#171717}body.light .brand span{color:#2f80ed}
+body.light .newchat{background:#2f80ed;color:#fff;border-color:#2f80ed}
+body.light .side-link{color:#333}body.light .side-link.active{background:#e5efff;color:#145db4}
+body.light .side-link:hover,body.light .history button:hover{background:#e9e9e9}
+body.light .history button{color:#444}
+body.light .side-bottom{border-top-color:#ddd}
+body.light .side-bottom .settings-trigger{color:#333}
+body.light .side-bottom .settings-trigger:hover{background:#e9e9e9}
+body.light .main{background:#fff}
+body.light .topbar{background:rgba(255,255,255,.94);border-bottom-color:#eee}
+body.light .bubble.user{background:#2f80ed!important;border-color:#2f80ed!important;color:#fff!important}
+body.light .composer:focus-within{border-color:#2f80ed;box-shadow:0 0 0 3px #2f80ed18}
+body.light .compose-bottom button:not(:disabled){background:#2f80ed;color:#fff}
+@media(max-width:760px){.sidebar{background:#080808}.sidebar.show{display:flex}.side-bottom{padding-bottom:8px}.topbar{justify-content:flex-end}.mobile-menu{margin-right:auto;background:#202020;border:1px solid #383838;border-radius:50%;width:40px;height:40px;color:#fff}.history{max-height:36svh}.workspace-nav{flex:0 0 auto}}
+@media(max-width:420px){.sidebar{width:min(300px,88vw)}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -211,17 +261,21 @@ body.light .settings-section{border-top-color:#e1e8e2}body.light .settings-secti
 <div class="app">
 <aside class="sidebar" id="sidebar">
 <div class="brand">Riseverse<span>HQ</span></div>
-<button class="newchat" id="newChat">＋ <span>New chat</span></button>
-<div class="side-label">RECENT CHATS</div><div class="history" id="historyList"></div><div class="side-label">YOUR WORKSPACE</div>
-<button class="side-link" data-tool="AI chat">✳ <span>AI assistant</span></button>
+<button class="newchat" id="newChat"><span class="newchat-icon">＋</span> <span>New chat</span></button>
+<div class="side-label">WORKSPACE</div>
+<nav class="workspace-nav" aria-label="Workspace">
+<button class="side-link active" data-tool="AI chat">✳ <span>AI assistant</span></button>
 <button class="side-link" id="openDeveloperStudio">⌘ <span>Developer Studio</span></button>
 <button class="side-link" data-tool="Writing studio">▤ <span>Writing studio</span></button>
 <button class="side-link" data-tool="Video ideas">▹ <span>Video ideas</span></button>
 <button class="side-link" data-tool="Learning hub">⌘ <span>Learning hub</span></button>
-<div class="side-bottom"><div class="profile"><div class="avatar">R</div><span id="sideUser">Guest account</span></div></div>
+</nav>
+<div class="side-label recent-label">RECENT CHATS</div>
+<div class="history" id="historyList"></div>
+<div class="side-bottom"><button class="settings-trigger" id="settingsBtn" type="button" aria-haspopup="dialog">⚙ <span>Settings</span></button><div class="profile"><div class="avatar">R</div><span id="sideUser">Guest account</span></div></div>
 </aside>
 <main class="main">
-<header class="topbar"><button class="settings-trigger" id="settingsBtn" type="button" aria-haspopup="dialog">⚙ <span>Settings</span></button><button class="theme-toggle" id="themeToggle" type="button">Light mode</button><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><span class="signed hide" id="signedLabel"></span><button class="login" id="loginBtn">Log in</button><button class="signup" id="signupBtn">Sign up</button><button class="login hide" id="logoutBtn">Log out</button></header>
+<header class="topbar"><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><button class="theme-toggle" id="themeToggle" type="button">Light mode</button><span class="signed hide" id="signedLabel"></span><button class="login" id="loginBtn">Log in</button><button class="signup" id="signupBtn">Sign up</button><button class="login hide" id="logoutBtn">Log out</button></header>
 <section class="content" id="content">
 <div class="mark">✳</div>
 <h1 id="greeting">What would you like to create?</h1>

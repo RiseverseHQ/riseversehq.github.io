@@ -145,6 +145,20 @@ body.light .builder-head button,body.light .builder-head input,body.light .build
 body.light .builder-head .builder-primary{background:#111;color:#fff;border-color:#111}
 @media(max-width:850px){.builder-grid{grid-template-columns:1fr;height:auto}.builder-pane{min-height:390px}.builder-editor,.builder-preview{min-height:390px}.builder-workspace{padding-top:8px}.builder-head h1{width:100%;margin-bottom:4px}}
 
+
+.builder-generate{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;padding:12px;margin:0 0 12px;border:1px solid #444;border-radius:12px;background:#191919}
+.builder-generate label{grid-column:1/-1;font-size:13px;font-weight:650}
+.builder-generate textarea{width:100%;min-height:76px;resize:vertical;border:1px solid #555;border-radius:8px;padding:11px;background:#101010;color:#eee;font:14px/1.5 inherit}
+.builder-generate button{border:1px solid #fff;border-radius:8px;padding:12px 16px;background:#fff;color:#111;font-weight:700;cursor:pointer}
+.builder-file-tabs{display:flex;gap:6px;align-items:center}
+.builder-file-tabs button{border:1px solid #555;border-radius:7px;padding:6px 10px;background:transparent;color:inherit;font-size:12px}
+.builder-file-tabs button.active{background:#fff;color:#111;border-color:#fff}
+body.light .builder-generate{background:#fff;border-color:#ddd}
+body.light .builder-generate textarea{background:#fafafa;color:#111;border-color:#ccc}
+body.light .builder-file-tabs button{border-color:#ccc}
+body.light .builder-file-tabs button.active{background:#111;color:#fff;border-color:#111}
+@media(max-width:650px){.builder-generate{grid-template-columns:1fr}.builder-generate label{grid-column:auto}.builder-generate button{width:100%}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -200,11 +214,24 @@ body.light .builder-head .builder-primary{background:#111;color:#fff;border-colo
     <button type="button" id="refreshBuilderProjects">Refresh</button>
     <button type="button" id="deleteBuilderProject">Delete project</button>
   </div>
+  <div class="builder-generate">
+    <label for="builderPrompt">Describe the website you want RiseverseHQ to build</label>
+    <textarea id="builderPrompt" maxlength="2500" placeholder="Example: Build a modern bakery website with a homepage, menu, opening hours, contact section and mobile-friendly design."></textarea>
+    <button type="button" id="generateBuilderProject">✦ Generate website</button>
+  </div>
   <div class="builder-grid">
-    <div class="builder-pane"><div class="builder-toolbar"><strong>index.html · Code editor</strong><button type="button" id="resetBuilderStarter">Load starter</button></div><textarea class="builder-editor" id="builderCode" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Website HTML code"></textarea></div>
+    <div class="builder-pane">
+      <div class="builder-toolbar"><strong id="builderEditorTitle">index.html · Code editor</strong><button type="button" id="resetBuilderStarter">Load starter</button></div>
+      <div class="builder-toolbar builder-file-tabs" aria-label="Project files">
+        <button type="button" class="active" data-builder-file="index.html">index.html</button>
+        <button type="button" data-builder-file="styles.css">styles.css</button>
+        <button type="button" data-builder-file="script.js">script.js</button>
+      </div>
+      <textarea class="builder-editor" id="builderCode" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Website source code"></textarea>
+    </div>
     <div class="builder-pane"><div class="builder-toolbar"><strong>Live preview</strong><span>Sandboxed preview</span></div><iframe class="builder-preview" id="builderPreview" title="Website live preview" sandbox="allow-scripts allow-forms"></iframe></div>
   </div>
-  <p class="builder-help">Edit the HTML on the left to see the result on the right. Your saved projects are private to your signed-in RiseverseHQ account. Export downloads a standalone HTML file.</p>
+  <p class="builder-help">Describe a website to generate HTML, CSS and JavaScript, then edit the files, preview, save privately to your account or export a standalone HTML file. Generated forms and account/payment flows are front-end demos until a backend is connected.</p>
   <p class="builder-status" id="builderStatus" role="status" aria-live="polite">Sign in to save projects to your account.</p>
 </section>
 
@@ -282,7 +309,11 @@ async function invokeRiseverseAI(payload){
         continue;
       }
       if(!response.ok)throw new Error(result.error||result.detail||('AI service returned HTTP '+response.status));
-      if(typeof result.reply!=='string'||!result.reply.trim())throw new Error(result.error||'The AI service returned an empty response.');
+      if(payload.mode==='build'){
+        if(!result.project||typeof result.project.files!=='object')throw new Error(result.error||'The AI website generator returned an incomplete project.');
+      }else if(typeof result.reply!=='string'||!result.reply.trim()){
+        throw new Error(result.error||'The AI service returned an empty response.');
+      }
       return result;
     }catch(error){
       if(error?.name==='AbortError')throw new Error('The AI request took too long. Your message is saved; please try again.');
@@ -358,22 +389,32 @@ themeToggle?.addEventListener('click',()=>{
 
 
 // Developer Studio: first HTML website-builder prototype.
-const starterWebsite = '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>My first website</title>\n  <style>\n    body { font-family: system-ui, sans-serif; margin: 0; padding: 48px 24px; color: #202020; background: #f5f5f5; }\n    main { max-width: 760px; margin: 8vh auto; padding: 40px; background: white; border-radius: 18px; box-shadow: 0 12px 40px #0001; }\n    a, button { color: white; background: #111; padding: 12px 18px; border-radius: 8px; text-decoration: none; border: 0; }\n  </style>\n</head>\n<body>\n  <main>\n    <h1>Welcome to my website</h1>\n    <p>This page was created in RiseverseHQ Developer Studio.</p>\n    <a href="mailto:hello@example.com">Contact me</a>\n  </main>\n</body>\n</html>';
+const starterWebsite = "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>My first website</title>\n  <link rel=\"stylesheet\" href=\"styles.css\">\n  <script defer src=\"script.js\"><\/script>\n</head>\n<body>\n  <main>\n    <h1>Welcome to my website</h1>\n    <p>This page was created in RiseverseHQ Developer Studio.</p>\n    <a href=\"mailto:hello@example.com\">Contact me</a>\n  </main>\n</body>\n</html>";
+const starterStyles = "body { font-family: system-ui, sans-serif; margin: 0; padding: 48px 24px; color: #202020; background: #f5f5f5; }\nmain { max-width: 760px; margin: 8vh auto; padding: 40px; background: white; border-radius: 18px; box-shadow: 0 12px 40px #0001; }\na, button { color: white; background: #111; padding: 12px 18px; border-radius: 8px; text-decoration: none; border: 0; }";
+const starterScript = "// Add your website interactions here.\nconsole.log('RiseverseHQ website is ready.');";
+let builderFiles = {"index.html": starterWebsite, "styles.css": starterStyles, "script.js": starterScript};
+let activeBuilderFile = "index.html";
 let currentBuilderProjectId = null;
 let builderProjectsCache = [];
 const builderEl = id => document.getElementById(id);
+
 function builderStatus(message, isError=false){const el=builderEl('builderStatus');if(el){el.textContent=message;el.style.color=isError?'#e88':'var(--muted)'}}
-function renderBuilderPreview(){const frame=builderEl('builderPreview');if(frame)frame.srcdoc=builderEl('builderCode').value||'<!doctype html><html><body></body></html>'}
-function startNewBuilderProject(){currentBuilderProjectId=null;builderEl('builderProjectName').value='My first website';builderEl('builderCode').value=starterWebsite;builderEl('builderProjectList').value='';renderBuilderPreview();builderStatus('New project ready. Save it to keep it in your account.')}
+function activateBuilderFile(file){activeBuilderFile=file;builderEl('builderCode').value=builderFiles[file]||'';builderEl('builderEditorTitle').textContent=file+' · Code editor';document.querySelectorAll('[data-builder-file]').forEach(button=>button.classList.toggle('active',button.dataset.builderFile===file));}
+function buildPreviewDocument(){let html=builderFiles['index.html']||'<!doctype html><html><head></head><body></body></html>';html=html.replace(/<link\b[^>]*href=["']styles\.css["'][^>]*>/i,'').replace(/<script\b[^>]*src=["']script\.js["'][^>]*>\s*<\/script>/i,'');const style='<style>\n'+(builderFiles['styles.css']||'')+'\n</style>';const script='<script>\n'+(builderFiles['script.js']||'')+'\n<\/script>';if(/<\/head>/i.test(html))html=html.replace(/<\/head>/i,style+'</head>');else html=style+html;if(/<\/body>/i.test(html))html=html.replace(/<\/body>/i,script+'</body>');else html+=script;return html;}
+function renderBuilderPreview(){const frame=builderEl('builderPreview');if(frame)frame.srcdoc=buildPreviewDocument();}
+function startNewBuilderProject(){currentBuilderProjectId=null;builderFiles={"index.html":starterWebsite,"styles.css":starterStyles,"script.js":starterScript};builderEl('builderProjectName').value='My first website';builderEl('builderProjectList').value='';builderEl('builderPrompt').value='';activateBuilderFile('index.html');renderBuilderPreview();builderStatus('New project ready. Describe a website or edit the starter files.')}
 function openBuilderWorkspace(){if(!currentUser){openAuth('login');builderStatus('Please log in to open your private Developer Studio.');return}builderEl('content').classList.add('hide');builderEl('builderWorkspace').classList.remove('hide');builderEl('sidebar').classList.remove('show');loadBuilderProjects();if(!builderEl('builderCode').value)startNewBuilderProject();}
 async function loadBuilderProjects(){if(!currentUser)return;builderStatus('Loading your saved projects…');const {data,error}=await supabase.from('builder_projects').select('id,name,project_type,files,updated_at').eq('user_id',currentUser.id).order('updated_at',{ascending:false}).limit(50);if(error){builderStatus('Could not load projects: '+error.message,true);return}builderProjectsCache=data||[];const select=builderEl('builderProjectList');select.innerHTML='<option value="">Choose a saved project…</option>';builderProjectsCache.forEach(project=>{const option=document.createElement('option');option.value=project.id;option.textContent=project.name;select.appendChild(option)});builderStatus(builderProjectsCache.length?'Loaded '+builderProjectsCache.length+' saved project(s).':'No saved projects yet. Create your first website.');}
-async function saveBuilderProject(){if(!currentUser){builderStatus('Log in before saving a project.',true);return}const name=builderEl('builderProjectName').value.trim();if(!name){builderStatus('Enter a project name first.',true);return}const payload={user_id:currentUser.id,name,project_type:'website',files:{'index.html':builderEl('builderCode').value}};builderEl('saveBuilderProject').disabled=true;builderStatus('Saving your project securely…');try{let result;if(currentBuilderProjectId){result=await supabase.from('builder_projects').update(payload).eq('id',currentBuilderProjectId).eq('user_id',currentUser.id).select('id').single()}else{result=await supabase.from('builder_projects').insert(payload).select('id').single()}if(result.error)throw result.error;currentBuilderProjectId=result.data.id;await loadBuilderProjects();builderEl('builderProjectList').value=currentBuilderProjectId;builderStatus('Project saved to your RiseverseHQ account.')}catch(error){builderStatus('Save failed: '+(error.message||'Unknown error'),true)}finally{builderEl('saveBuilderProject').disabled=false}}
-async function loadSelectedBuilderProject(){const id=builderEl('builderProjectList').value;if(!id)return;const project=builderProjectsCache.find(item=>item.id===id);if(!project)return;currentBuilderProjectId=project.id;builderEl('builderProjectName').value=project.name;builderEl('builderCode').value=project.files?.['index.html']||starterWebsite;renderBuilderPreview();builderStatus('Opened '+project.name+'.')}
+async function generateBuilderProject(){if(!currentUser){openAuth('login');return}const prompt=builderEl('builderPrompt').value.trim();if(!prompt){builderStatus('Describe the website you want first.',true);return}const button=builderEl('generateBuilderProject');button.disabled=true;button.textContent='Generating…';builderStatus('RiseverseHQ is creating your website files. This can take a little while.');try{const result=await invokeRiseverseAI({mode:'build',message:prompt});const project=result.project;builderFiles=project.files;builderEl('builderProjectName').value=project.projectName||'My new website';activateBuilderFile('index.html');renderBuilderPreview();builderStatus((project.summary||'Your website has been generated.')+' Review the preview, then save your project.')}catch(error){builderStatus('Website generation failed: '+(error.message||'Please try again.'),true)}finally{button.disabled=false;button.textContent='✦ Generate website'}}
+async function saveBuilderProject(){if(!currentUser){builderStatus('Log in before saving a project.',true);return}builderFiles[activeBuilderFile]=builderEl('builderCode').value;const name=builderEl('builderProjectName').value.trim();if(!name){builderStatus('Enter a project name first.',true);return}const payload={user_id:currentUser.id,name,project_type:'website',files:builderFiles};builderEl('saveBuilderProject').disabled=true;builderStatus('Saving your project securely…');try{let result;if(currentBuilderProjectId){result=await supabase.from('builder_projects').update(payload).eq('id',currentBuilderProjectId).eq('user_id',currentUser.id).select('id').single()}else{result=await supabase.from('builder_projects').insert(payload).select('id').single()}if(result.error)throw result.error;currentBuilderProjectId=result.data.id;await loadBuilderProjects();builderEl('builderProjectList').value=currentBuilderProjectId;builderStatus('Project saved to your RiseverseHQ account.')}catch(error){builderStatus('Save failed: '+(error.message||'Unknown error'),true)}finally{builderEl('saveBuilderProject').disabled=false}}
+async function loadSelectedBuilderProject(){const id=builderEl('builderProjectList').value;if(!id)return;const project=builderProjectsCache.find(item=>item.id===id);if(!project)return;currentBuilderProjectId=project.id;builderEl('builderProjectName').value=project.name;builderFiles={"index.html":project.files?.['index.html']||starterWebsite,"styles.css":project.files?.['styles.css']||'',"script.js":project.files?.['script.js']||''};activateBuilderFile('index.html');renderBuilderPreview();builderStatus('Opened '+project.name+'.')}
 async function deleteBuilderProject(){if(!currentUser||!currentBuilderProjectId){builderStatus('Choose a saved project before deleting.',true);return}if(!confirm('Delete this saved project? This cannot be undone.'))return;const {error}=await supabase.from('builder_projects').delete().eq('id',currentBuilderProjectId).eq('user_id',currentUser.id);if(error){builderStatus('Delete failed: '+error.message,true);return}startNewBuilderProject();await loadBuilderProjects();builderStatus('Project deleted.')}
-function exportBuilderProject(){const blob=new Blob([builderEl('builderCode').value],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(builderEl('builderProjectName').value.trim()||'riseverse-website').replace(/[^a-z0-9-_]+/gi,'-').toLowerCase()+'.html';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);builderStatus('HTML file exported to your device.')}
+function exportBuilderProject(){builderFiles[activeBuilderFile]=builderEl('builderCode').value;const blob=new Blob([buildPreviewDocument()],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(builderEl('builderProjectName').value.trim()||'riseverse-website').replace(/[^a-z0-9-_]+/gi,'-').toLowerCase()+'.html';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);builderStatus('Standalone HTML file exported to your device.')}
 builderEl('openDeveloperStudio').addEventListener('click',openBuilderWorkspace);
 builderEl('backToChat').addEventListener('click',()=>{builderEl('builderWorkspace').classList.add('hide');builderEl('content').classList.remove('hide')});
-builderEl('builderCode').addEventListener('input',renderBuilderPreview);
+builderEl('builderCode').addEventListener('input',()=>{builderFiles[activeBuilderFile]=builderEl('builderCode').value;renderBuilderPreview()});
+document.querySelectorAll('[data-builder-file]').forEach(button=>button.addEventListener('click',()=>{builderFiles[activeBuilderFile]=builderEl('builderCode').value;activateBuilderFile(button.dataset.builderFile)}));
+builderEl('generateBuilderProject').addEventListener('click',generateBuilderProject);
 builderEl('newBuilderProject').addEventListener('click',startNewBuilderProject);
 builderEl('resetBuilderStarter').addEventListener('click',()=>{if(confirm('Replace the current editor contents with the starter website?'))startNewBuilderProject()});
 builderEl('saveBuilderProject').addEventListener('click',saveBuilderProject);
@@ -381,6 +422,7 @@ builderEl('builderProjectList').addEventListener('change',loadSelectedBuilderPro
 builderEl('refreshBuilderProjects').addEventListener('click',loadBuilderProjects);
 builderEl('deleteBuilderProject').addEventListener('click',deleteBuilderProject);
 builderEl('downloadBuilderProject').addEventListener('click',exportBuilderProject);
+activateBuilderFile('index.html');
 
 </script>
 </body></html>

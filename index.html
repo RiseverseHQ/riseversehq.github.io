@@ -215,9 +215,9 @@ body.light .builder-file-tabs button.active{background:#111;color:#fff;border-co
     <button type="button" id="deleteBuilderProject">Delete project</button>
   </div>
   <div class="builder-generate">
-    <label for="builderPrompt">Describe the website you want RiseverseHQ to build</label>
+    <label for="builderPrompt">Describe the website or web app you want RiseverseHQ to build</label>
     <textarea id="builderPrompt" maxlength="2500" placeholder="Example: Build a modern bakery website with a homepage, menu, opening hours, contact section and mobile-friendly design."></textarea>
-    <button type="button" id="generateBuilderProject">✦ Generate website</button>
+    <button type="button" id="generateBuilderProject">✦ Generate website / web app</button>
   </div>
   <div class="builder-grid">
     <div class="builder-pane">
@@ -231,7 +231,7 @@ body.light .builder-file-tabs button.active{background:#111;color:#fff;border-co
     </div>
     <div class="builder-pane"><div class="builder-toolbar"><strong>Live preview</strong><span>Sandboxed preview</span></div><iframe class="builder-preview" id="builderPreview" title="Website live preview" sandbox="allow-scripts allow-forms"></iframe></div>
   </div>
-  <p class="builder-help">Describe a website to generate HTML, CSS and JavaScript, then edit the files, preview, save privately to your account or export a standalone HTML file. Generated forms and account/payment flows are front-end demos until a backend is connected.</p>
+  <p class="builder-help">Describe a website or web app to generate HTML, CSS and JavaScript, then edit the files, preview, save privately to your account or export a standalone HTML file. Generated forms and account/payment flows are front-end demos until a backend is connected.</p>
   <p class="builder-status" id="builderStatus" role="status" aria-live="polite">Sign in to save projects to your account.</p>
 </section>
 
@@ -324,6 +324,7 @@ async function invokeRiseverseAI(payload){
   }
   throw new Error('Your session could not be refreshed. Please log in again.');
 }
+function isBuildRequest(text){const s=String(text||'').toLowerCase();const target=/(website|web\s*site|web app|web application|mobile app|mobile application|android app|ios app|landing page|online store|e-?commerce site)/i.test(s);const action=/(\b(build|create|make|develop|design|generate|code|program|launch|implement)\b)/i.test(s);const explicit=/(\b(build|create|make|develop|design|generate)\b).{0,45}(\b(website|web\s*site|web app|web application|app|application|landing page|online store)\b)/i.test(s);return target&&(action||explicit)}
 async function sendMessage(){
   const prompt=$('prompt').value.trim();if((!prompt&&!selectedImages.length)||busy)return;
   if(!currentUser){openAuth('login');return}
@@ -331,14 +332,31 @@ async function sendMessage(){
   busy=true;updateComposerState();$('prompt').value='';
   addMessage('user',prompt,outgoingImages);
   const pending=document.createElement('div');pending.className='bubble assistant pending';pending.textContent='RiseverseHQ is thinking…';$('chatLog').appendChild(pending);
-  $('chatStatus').textContent='Generating a response…';
+  const buildRequest=outgoingImages.length===0&&isBuildRequest(prompt);
+  $('chatStatus').textContent=buildRequest?'Opening Developer Studio and generating your project…':'Generating a response…';
   try{
     await saveChat();
-    const history=messages.slice(0,-1).slice(-12).map(m=>({role:m.role,content:m.content,images:(m.images||[]).map(imagePayload).filter(Boolean)}));
-    const images=outgoingImages.map(imagePayload).filter(Boolean);
-    const data=await invokeRiseverseAI({message:prompt,history,images});
-    const reply=data.reply;
-    pending.remove();addMessage('assistant',reply);await saveChat();
+    if(buildRequest){
+      const result=await invokeRiseverseAI({mode:'build',message:prompt});
+      const project=result.project;
+      builderFiles=project.files;
+      currentBuilderProjectId=null;
+      builderEl('builderProjectName').value=project.projectName||'My new project';
+      builderEl('builderPrompt').value=prompt;
+      activateBuilderFile('index.html');
+      renderBuilderPreview();
+      pending.remove();
+      addMessage('assistant','I generated **'+(project.projectName||'your project')+'** in Developer Studio. '+(project.summary||'Your project files and live preview are ready.')+'\n\nOpen Developer Studio to review the code, test the preview, and save your project. Publishing to a public URL is not connected yet, so I will not pretend it is already online.');
+      await saveChat();
+      openBuilderWorkspace();
+      builderStatus((project.summary||'Project generated.')+' Preview is ready. Review and save it. Public deployment is not connected yet.');
+      $('chatStatus').textContent='Project generated · preview ready';
+    }else{
+      const history=messages.slice(0,-1).slice(-12).map(m=>({role:m.role,content:m.content,images:(m.images||[]).map(imagePayload).filter(Boolean)}));
+      const images=outgoingImages.map(imagePayload).filter(Boolean);
+      const data=await invokeRiseverseAI({message:prompt,history,images});
+      pending.remove();addMessage('assistant',data.reply);await saveChat();
+    }
   }catch(err){
     pending.remove();const msg=err?.message||'Please try again in a moment.';
     addMessage('assistant','I could not complete that request. '+msg);
@@ -405,7 +423,7 @@ function renderBuilderPreview(){const frame=builderEl('builderPreview');if(frame
 function startNewBuilderProject(){currentBuilderProjectId=null;builderFiles={"index.html":starterWebsite,"styles.css":starterStyles,"script.js":starterScript};builderEl('builderProjectName').value='My first website';builderEl('builderProjectList').value='';builderEl('builderPrompt').value='';activateBuilderFile('index.html');renderBuilderPreview();builderStatus('New project ready. Describe a website or edit the starter files.')}
 function openBuilderWorkspace(){if(!currentUser){openAuth('login');builderStatus('Please log in to open your private Developer Studio.');return}builderEl('content').classList.add('hide');builderEl('builderWorkspace').classList.remove('hide');builderEl('sidebar').classList.remove('show');loadBuilderProjects();if(!builderEl('builderCode').value)startNewBuilderProject();}
 async function loadBuilderProjects(){if(!currentUser)return;builderStatus('Loading your saved projects…');const {data,error}=await supabase.from('builder_projects').select('id,name,project_type,files,updated_at').eq('user_id',currentUser.id).order('updated_at',{ascending:false}).limit(50);if(error){builderStatus('Could not load projects: '+error.message,true);return}builderProjectsCache=data||[];const select=builderEl('builderProjectList');select.innerHTML='<option value="">Choose a saved project…</option>';builderProjectsCache.forEach(project=>{const option=document.createElement('option');option.value=project.id;option.textContent=project.name;select.appendChild(option)});builderStatus(builderProjectsCache.length?'Loaded '+builderProjectsCache.length+' saved project(s).':'No saved projects yet. Create your first website.');}
-async function generateBuilderProject(){if(!currentUser){openAuth('login');return}const prompt=builderEl('builderPrompt').value.trim();if(!prompt){builderStatus('Describe the website you want first.',true);return}const button=builderEl('generateBuilderProject');button.disabled=true;button.textContent='Generating…';builderStatus('RiseverseHQ is creating your website files. This can take a little while.');try{const result=await invokeRiseverseAI({mode:'build',message:prompt});const project=result.project;builderFiles=project.files;builderEl('builderProjectName').value=project.projectName||'My new website';activateBuilderFile('index.html');renderBuilderPreview();builderStatus((project.summary||'Your website has been generated.')+' Review the preview, then save your project.')}catch(error){builderStatus('Website generation failed: '+(error.message||'Please try again.'),true)}finally{button.disabled=false;button.textContent='✦ Generate website'}}
+async function generateBuilderProject(){if(!currentUser){openAuth('login');return}const prompt=builderEl('builderPrompt').value.trim();if(!prompt){builderStatus('Describe the website you want first.',true);return}const button=builderEl('generateBuilderProject');button.disabled=true;button.textContent='Generating…';builderStatus('RiseverseHQ is creating your website files. This can take a little while.');try{const result=await invokeRiseverseAI({mode:'build',message:prompt});const project=result.project;builderFiles=project.files;builderEl('builderProjectName').value=project.projectName||'My new website';activateBuilderFile('index.html');renderBuilderPreview();builderStatus((project.summary||'Your website has been generated.')+' Review the preview, then save your project.')}catch(error){builderStatus('Website generation failed: '+(error.message||'Please try again.'),true)}finally{button.disabled=false;button.textContent='✦ Generate website / web app'}}
 async function saveBuilderProject(){if(!currentUser){builderStatus('Log in before saving a project.',true);return}builderFiles[activeBuilderFile]=builderEl('builderCode').value;const name=builderEl('builderProjectName').value.trim();if(!name){builderStatus('Enter a project name first.',true);return}const payload={user_id:currentUser.id,name,project_type:'website',files:builderFiles};builderEl('saveBuilderProject').disabled=true;builderStatus('Saving your project securely…');try{let result;if(currentBuilderProjectId){result=await supabase.from('builder_projects').update(payload).eq('id',currentBuilderProjectId).eq('user_id',currentUser.id).select('id').single()}else{result=await supabase.from('builder_projects').insert(payload).select('id').single()}if(result.error)throw result.error;currentBuilderProjectId=result.data.id;await loadBuilderProjects();builderEl('builderProjectList').value=currentBuilderProjectId;builderStatus('Project saved to your RiseverseHQ account.')}catch(error){builderStatus('Save failed: '+(error.message||'Unknown error'),true)}finally{builderEl('saveBuilderProject').disabled=false}}
 async function loadSelectedBuilderProject(){const id=builderEl('builderProjectList').value;if(!id)return;const project=builderProjectsCache.find(item=>item.id===id);if(!project)return;currentBuilderProjectId=project.id;builderEl('builderProjectName').value=project.name;builderFiles={"index.html":project.files?.['index.html']||starterWebsite,"styles.css":project.files?.['styles.css']||'',"script.js":project.files?.['script.js']||''};activateBuilderFile('index.html');renderBuilderPreview();builderStatus('Opened '+project.name+'.')}
 async function deleteBuilderProject(){if(!currentUser||!currentBuilderProjectId){builderStatus('Choose a saved project before deleting.',true);return}if(!confirm('Delete this saved project? This cannot be undone.'))return;const {error}=await supabase.from('builder_projects').delete().eq('id',currentBuilderProjectId).eq('user_id',currentUser.id);if(error){builderStatus('Delete failed: '+error.message,true);return}startNewBuilderProject();await loadBuilderProjects();builderStatus('Project deleted.')}

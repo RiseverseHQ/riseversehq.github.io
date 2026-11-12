@@ -46,7 +46,82 @@ body.light .message.error{color:#a11}
 body.light .theme-toggle{border-color:#bbb;background:#fff;color:#111}
 @media(max-width:760px){.theme-toggle{padding:8px 10px}}
 
+/* ChatGPT-like message, attachment, history and monochrome theme refinements */
+body:not(.light){--bg:#111;--side:#171717;--panel:#1d1d1d;--line:#393939;--text:#f5f5f5;--muted:#aaa;--accent:#fff}
+body:not(.light) .brand span{color:#fff}
+body:not(.light) .avatar{background:#333;color:#fff}
+body:not(.light) .bubble.user{background:#292929;color:#fff}
+body:not(.light) .bubble.assistant{background:#1d1d1d;border-color:#383838;color:#f5f5f5}
+body:not(.light) .chip{border-color:#555;color:#eee}
+body:not(.light) .switch{color:#eee}
+body:not(.light) .status,body:not(.light) .footer{color:#999}
+body:not(.light) .composer{background:#1d1d1d;border-color:#4a4a4a}
+body:not(.light) .compose-bottom button{background:#fff;color:#111}
+body.light{color-scheme:light;background:#fff;color:#111;--bg:#fff;--side:#f7f7f7;--panel:#fff;--line:#e5e5e5;--text:#111;--muted:#666;--accent:#111}
+body.light .app,body.light .main,body.light .content{background:#fff;color:#111}
+body.light .sidebar{background:#f7f7f7;border-right-color:#e5e5e5}
+body.light .brand span{color:#111}
+body.light .newchat,body.light .side-links,body.light .topbar button{border-color:#ccc;color:#111;background:transparent}
+body.light .newchat:hover,body.light .side-link:hover,body.light .history button:hover{background:#eaeaea}
+body.light .side-link,body.light .history button{color:#333}
+body.light .side-label,body.light .sub,body.light .status,body.light .footer{color:#666}
+body.light .profile{border-top-color:#ddd;color:#333}
+body.light .avatar{background:#222;color:#fff}
+body.light .mark{background:#eee;color:#111;border-color:#ccc}
+body.light .bubble.user{background:#ededed;color:#111}
+body.light .bubble.assistant{background:#f7f7f7;color:#111;border-color:#e5e5e5}
+body.light .composer{background:#fff;border-color:#ccc;box-shadow:0 8px 30px #0000000a}
+body.light .composer textarea{color:#111}
+body.light .composer textarea::placeholder{color:#777}
+body.light .compose-bottom{color:#666}
+body.light .compose-bottom button{background:#111;color:#fff}
+body.light .chip{border-color:#ccc;color:#222}
+body.light .chip:hover{background:#eee}
+body.light .dialog{background:#fff;border-color:#ddd;color:#111}
+body.light .dialog p,body.light .dialog label{color:#555}
+body.light .dialog input{background:#fff;color:#111;border-color:#bbb}
+body.light .switch{color:#222}
+body.light .message{color:#555}
+body.light .message.error{color:#a11}
+body.light .signed{color:#555}
+body.light .theme-toggle{border-color:#bbb;background:#fff;color:#111}
+.history-item{display:flex;align-items:center;gap:4px;width:100%}
+.history-item .history-open{flex:1;min-width:0}
+.history-item .history-delete{width:28px;min-width:28px;padding:5px 0;text-align:center;color:#999;border-radius:6px;background:transparent;border:0;font-size:18px}
+.history-item .history-delete:hover{background:#ddd;color:#111}
+.compose-bottom{gap:10px}
+.composer-tools{display:flex;align-items:center;gap:6px}
+.tool-button{width:34px;height:34px;border:1px solid #666;border-radius:50%;background:transparent;color:inherit;font-size:20px;line-height:1}
+.tool-button:hover{background:#7772}
+.tool-button.recording{background:#555;color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.5}}
+.attachment-preview{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:8px}
+.attachment-thumb{position:relative;width:64px;height:64px}
+.attachment-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid #888}
+.attachment-thumb button{position:absolute;right:-6px;top:-6px;width:22px;height:22px;border:0;border-radius:50%;background:#111;color:#fff;font-size:16px}
+.message-image{display:block;max-width:min(100%,420px);max-height:360px;object-fit:contain;border-radius:12px;margin-top:10px}
+.message-text{white-space:normal;overflow-wrap:anywhere}
+.message-text p{margin:0 0 12px}
+.message-text p:last-child{margin-bottom:0}
+.message-text h1,.message-text h2,.message-text h3{margin:18px 0 8px;line-height:1.25}
+.message-text ul,.message-text ol{padding-left:24px;margin:8px 0}
+.message-text pre{overflow:auto;background:#111;color:#f4f4f4;padding:14px;border-radius:10px;margin:12px 0}
+.message-text code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#8882;padding:2px 5px;border-radius:4px}
+.message-text pre code{background:transparent;padding:0}
+.message-text blockquote{border-left:3px solid #888;padding-left:12px;color:inherit;opacity:.85}
+.message-text table{display:block;overflow-x:auto;border-collapse:collapse}
+.message-text th,.message-text td{border:1px solid #888;padding:6px 9px}
+.message-actions{display:flex;gap:12px;margin-top:10px}
+.message-actions button{border:0;background:transparent;color:inherit;opacity:.65;padding:4px 2px;font-size:12px}
+.message-actions button:hover{opacity:1;text-decoration:underline}
+body.light .tool-button{border-color:#bbb;color:#111}
+body.light .attachment-thumb button{background:#111;color:#fff}
+body.light .message-text pre{background:#222}
+body.light .history-item .history-delete:hover{background:#e3e3e3}
+@media(max-width:760px){.compose-bottom{flex-wrap:wrap}.compose-bottom #chatStatus{order:3;flex-basis:100%;text-align:left}.message-image{max-width:100%}.tool-button{width:32px;height:32px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -67,8 +142,17 @@ body.light .theme-toggle{border-color:#bbb;background:#fff;color:#111}
 <h1 id="greeting">What would you like to create?</h1>
 <p class="sub">A simpler space to think, write, learn and build.</p>
 <div class="chatlog" id="chatLog" aria-live="polite"></div><div class="composer">
+<div id="attachmentPreview" class="attachment-preview" aria-live="polite"></div>
 <textarea id="prompt" rows="2" placeholder="Message RiseverseHQ…" aria-label="Message RiseverseHQ"></textarea>
-<div class="compose-bottom"><span id="chatStatus">Sign in to start a private chat</span><button id="send" disabled aria-label="Send message">↑</button></div>
+<div class="compose-bottom">
+<div class="composer-tools">
+<button id="attachImage" class="tool-button" type="button" aria-label="Attach image" title="Attach image">＋</button>
+<input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+<button id="micButton" class="tool-button" type="button" aria-label="Voice input" title="Voice input">🎙</button>
+</div>
+<span id="chatStatus">Sign in to start a private chat</span>
+<button id="send" disabled aria-label="Send message">↑</button>
+</div>
 </div>
 <div class="quick"><button class="chip" data-prompt="Give me ideas for a short video">▹ Video ideas</button><button class="chip" data-prompt="Help me write a clear and engaging post">✎ Write something</button><button class="chip" data-prompt="Teach me a useful new skill step by step">⌘ Learn something</button><button class="chip" data-prompt="Help me plan my next project">＋ Plan a project</button></div>
 <p class="status" id="statusNote">AI responses are generated by Google Gemini. Avoid sharing passwords, financial details, or other sensitive information.</p>
@@ -84,22 +168,90 @@ body.light .theme-toggle{border-color:#bbb;background:#fff;color:#111}
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase=createClient('https://fxvjcikzkwdudpbgwoah.supabase.co','sb_publishable_dXmTxa_fWxGlvjBiLn5e8w_KiLlWVY6');
-const $=id=>document.getElementById(id);let mode='signup',currentUser=null,currentChatId=null,messages=[],busy=false;
+const $=id=>document.getElementById(id);let mode='signup',currentUser=null,currentChatId=null,messages=[],busy=false,selectedImages=[];
 function openAuth(next){mode=next;$('authTitle').textContent=mode==='signup'?'Create your account':'Welcome back';$('authIntro').textContent=mode==='signup'?'Join RiseverseHQ and keep your workspace in one place.':'Log in to return to your RiseverseHQ workspace.';$('authSubmit').textContent=mode==='signup'?'Create account':'Log in';$('password').autocomplete=mode==='signup'?'new-password':'current-password';$('switchMode').textContent=mode==='signup'?'Already have an account? Log in':"Don't have an account? Sign up";$('authMessage').textContent='';$('authMessage').className='message';$('authModal').classList.add('open')}
 function updateSession(user){currentUser=user;$('loginBtn').classList.toggle('hide',!!user);$('signupBtn').classList.toggle('hide',!!user);$('logoutBtn').classList.toggle('hide',!user);$('signedLabel').classList.toggle('hide',!user);$('signedLabel').textContent=user?'Signed in':'';$('sideUser').textContent=user?(user.email||'Your account'):'Guest account';$('greeting').textContent=user?'Welcome to RiseverseHQ':'What would you like to create?';$('chatStatus').textContent=user?'Your chat is private to your account':'Sign in to start a private chat';$('send').disabled=!user||busy}
-function render(){const log=$('chatLog');log.innerHTML='';messages.forEach(m=>{const el=document.createElement('div');el.className='bubble '+(m.role==='user'?'user':'assistant');el.textContent=m.content;log.appendChild(el)});log.scrollTop=log.scrollHeight}
-function addMessage(role,content){messages.push({role,content});render()}
-async function loadHistory(){const list=$('historyList');list.innerHTML='';if(!currentUser)return;const {data,error}=await supabase.from('conversations').select('id,title,updated_at').eq('user_id',currentUser.id).order('updated_at',{ascending:false}).limit(15);if(error){$('chatStatus').textContent='Chat history could not be loaded';return}for(const chat of data||[]){const b=document.createElement('button');b.textContent=chat.title||'New chat';b.title=b.textContent;b.onclick=()=>openChat(chat.id);list.appendChild(b)}}
-async function openChat(id){const {data,error}=await supabase.from('conversations').select('id,title,messages').eq('id',id).eq('user_id',currentUser.id).single();if(error){$('chatStatus').textContent='Could not open that conversation';return}currentChatId=data.id;messages=Array.isArray(data.messages)?data.messages:[];render();$('greeting').textContent=data.title||'Conversation';$('sidebar').classList.remove('show')}
+function renderMarkdown(text){
+  const source=String(text||'');
+  if(window.marked&&window.DOMPurify){return window.DOMPurify.sanitize(window.marked.parse(source,{gfm:true,breaks:true}))}
+  const escaped=source.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  return escaped.replace(/\n/g,'<br>');
+}
+function render(){
+  const log=$('chatLog');log.innerHTML='';
+  messages.forEach((m,index)=>{
+    const el=document.createElement('div');el.className='bubble '+(m.role==='user'?'user':'assistant');
+    const text=document.createElement('div');text.className='message-text';text.innerHTML=renderMarkdown(m.content);el.appendChild(text);
+    (m.images||[]).forEach(src=>{const img=document.createElement('img');img.className='message-image';img.src=src;img.alt='Attached image';img.loading='lazy';el.appendChild(img)});
+    if(m.role==='assistant'){
+      const actions=document.createElement('div');actions.className='message-actions';
+      const copy=document.createElement('button');copy.type='button';copy.textContent='Copy';copy.title='Copy response';copy.onclick=async()=>{try{await navigator.clipboard.writeText(m.content||'');copy.textContent='Copied';setTimeout(()=>copy.textContent='Copy',1400)}catch{copy.textContent='Select text to copy'}};
+      actions.appendChild(copy);
+      if('speechSynthesis' in window){const speak=document.createElement('button');speak.type='button';speak.textContent='Read aloud';speak.onclick=()=>{window.speechSynthesis.cancel();window.speechSynthesis.speak(new SpeechSynthesisUtterance(m.content||''))};actions.appendChild(speak)}
+      el.appendChild(actions);
+    }
+    log.appendChild(el);
+  });
+  log.scrollTop=log.scrollHeight;
+}
+function addMessage(role,content,images=[]){messages.push({role,content,images});render()}
+async function loadHistory(){
+  const list=$('historyList');list.innerHTML='';if(!currentUser)return;
+  const {data,error}=await supabase.from('conversations').select('id,title,updated_at').eq('user_id',currentUser.id).order('updated_at',{ascending:false}).limit(30);
+  if(error){$('chatStatus').textContent='Chat history could not be loaded';return}
+  for(const chat of data||[]){
+    const row=document.createElement('div');row.className='history-item';
+    const b=document.createElement('button');b.className='history-open';b.textContent=chat.title||'New chat';b.title=b.textContent;b.onclick=()=>openChat(chat.id);
+    const del=document.createElement('button');del.className='history-delete';del.type='button';del.textContent='×';del.title='Delete conversation';del.setAttribute('aria-label','Delete conversation');
+    del.onclick=async(e)=>{e.stopPropagation();if(!confirm('Delete this conversation?'))return;const result=await supabase.from('conversations').delete().eq('id',chat.id).eq('user_id',currentUser.id);if(result.error){$('chatStatus').textContent='Could not delete conversation';return}if(currentChatId===chat.id){currentChatId=null;messages=[];render();$('greeting').textContent='What would you like to create?'}await loadHistory()};
+    row.append(b,del);list.appendChild(row);
+  }
+}
+async function openChat(id){const {data,error}=await supabase.from('conversations').select('id,title,messages').eq('id',id).eq('user_id',currentUser.id).single();if(error){$('chatStatus').textContent='Could not open that conversation';return}currentChatId=data.id;messages=Array.isArray(data.messages)?data.messages:[];selectedImages=[];renderAttachmentPreview();render();$('greeting').textContent=data.title||'Conversation';$('sidebar').classList.remove('show')}
 async function saveChat(){if(!currentUser||!messages.length)return;const title=(messages.find(m=>m.role==='user')?.content||'New chat').slice(0,60);const payload={user_id:currentUser.id,title,messages,updated_at:new Date().toISOString()};let result;if(currentChatId)result=await supabase.from('conversations').update(payload).eq('id',currentChatId).eq('user_id',currentUser.id).select('id').single();else result=await supabase.from('conversations').insert(payload).select('id').single();if(result.error){$('chatStatus').textContent='Reply received, but saving failed';return}currentChatId=result.data.id;await loadHistory();$('chatStatus').textContent='Saved to your account'}
-async function sendMessage(){const prompt=$('prompt').value.trim();if(!prompt||busy)return;if(!currentUser){openAuth('login');return}busy=true;$('send').disabled=true;$('prompt').value='';addMessage('user',prompt);const pending=document.createElement('div');pending.className='bubble assistant pending';pending.textContent='RiseverseHQ is thinking…';$('chatLog').appendChild(pending);$('chatStatus').textContent='Generating a response…';try{const history=messages.slice(0,-1).slice(-12).map(m=>({role:m.role,content:m.content}));const {data,error}=await supabase.functions.invoke('riseverse-ai',{body:{message:prompt,history}});if(error)throw error;const reply=data?.reply;if(!reply)throw new Error(data?.error||'The AI service returned an empty response.');pending.remove();addMessage('assistant',reply);await saveChat()}catch(err){pending.remove();const msg=err?.message||'Please try again in a moment.';addMessage('assistant','I could not complete that request. '+msg);$('chatStatus').textContent='Chat request failed — please try again';}finally{busy=false;$('send').disabled=!currentUser}}
+function imagePayload(dataUrl){const match=String(dataUrl).match(/^data:(image\\/(?:jpeg|png|webp));base64,(.+)$/);return match?{mimeType:match[1],data:match[2]}:null}
+function updateComposerState(){$('send').disabled=!currentUser||busy||(!$('prompt').value.trim()&&!selectedImages.length)}
+async function sendMessage(){
+  const prompt=$('prompt').value.trim();if((!prompt&&!selectedImages.length)||busy)return;
+  if(!currentUser){openAuth('login');return}
+  const outgoingImages=selectedImages.slice();selectedImages=[];renderAttachmentPreview();
+  busy=true;updateComposerState();$('prompt').value='';
+  addMessage('user',prompt,outgoingImages);
+  const pending=document.createElement('div');pending.className='bubble assistant pending';pending.textContent='RiseverseHQ is thinking…';$('chatLog').appendChild(pending);
+  $('chatStatus').textContent='Generating a response…';
+  try{
+    await saveChat();
+    const history=messages.slice(0,-1).slice(-12).map(m=>({role:m.role,content:m.content,images:(m.images||[]).map(imagePayload).filter(Boolean)}));
+    const images=outgoingImages.map(imagePayload).filter(Boolean);
+    const {data,error}=await supabase.functions.invoke('riseverse-ai',{body:{message:prompt,history,images}});
+    if(error){
+      let detail=error.message||'Please try again in a moment.';
+      try{const response=error.context?.clone?error.context.clone():error.context;if(response?.json){const body=await response.json();detail=body.error||body.detail||detail}}catch{}
+      throw new Error(detail);
+    }
+    const reply=data?.reply;if(!reply)throw new Error(data?.error||'The AI service returned an empty response.');
+    pending.remove();addMessage('assistant',reply);await saveChat();
+  }catch(err){
+    pending.remove();const msg=err?.message||'Please try again in a moment.';
+    addMessage('assistant','I could not complete that request. '+msg);
+    await saveChat();$('chatStatus').textContent='Chat request failed — please try again';
+  }finally{busy=false;updateComposerState()}
+}
 $('signupBtn').onclick=()=>openAuth('signup');$('loginBtn').onclick=()=>openAuth('login');$('closeModal').onclick=()=>$('authModal').classList.remove('open');$('authModal').addEventListener('click',e=>{if(e.target===$('authModal'))$('authModal').classList.remove('open')});$('switchMode').onclick=()=>openAuth(mode==='signup'?'login':'signup');
 $('authForm').onsubmit=async e=>{e.preventDefault();const email=$('email').value.trim(),password=$('password').value;$('authSubmit').disabled=true;$('authMessage').className='message';$('authMessage').textContent=mode==='signup'?'Creating your account…':'Logging in…';try{let result;if(mode==='signup')result=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin}});else result=await supabase.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(mode==='signup'&&!result.data.session){$('authMessage').textContent='Account request received. Check your email for the confirmation link, then return here to log in.';$('authForm').reset()}else{$('authMessage').textContent='You are signed in.';await activateUser(result.data.user);setTimeout(()=>$('authModal').classList.remove('open'),700)}}catch(err){$('authMessage').className='message error';$('authMessage').textContent=err.message||'Something went wrong. Please try again.'}finally{$('authSubmit').disabled=false}};
 async function activateUser(user){updateSession(user);await loadHistory()}
 $('logoutBtn').onclick=async()=>{await supabase.auth.signOut();currentChatId=null;messages=[];render();$('historyList').innerHTML='';updateSession(null)};
 supabase.auth.onAuthStateChange((_event,session)=>{activateUser(session?.user||null)});const {data:{session}}=await supabase.auth.getSession();await activateUser(session?.user||null);
-$('menu').onclick=()=>$('sidebar').classList.toggle('show');$('newChat').onclick=()=>{currentChatId=null;messages=[];render();$('greeting').textContent='What would you like to create?';$('prompt').value='';$('prompt').focus();$('sidebar').classList.remove('show')};
-$('send').onclick=sendMessage;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});$('prompt').addEventListener('input',()=>{$('send').disabled=!currentUser||busy||!$('prompt').value.trim()});
+$('menu').onclick=()=>$('sidebar').classList.toggle('show');$('newChat').onclick=async()=>{if(busy)return;await saveChat();currentChatId=null;messages=[];selectedImages=[];renderAttachmentPreview();render();$('greeting').textContent='What would you like to create?';$('prompt').value='';updateComposerState();$('prompt').focus();$('sidebar').classList.remove('show');await loadHistory()};
+$('send').onclick=sendMessage;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});$('prompt').addEventListener('input',updateComposerState);
+function renderAttachmentPreview(){const box=$('attachmentPreview');box.innerHTML='';selectedImages.forEach((src,index)=>{const item=document.createElement('div');item.className='attachment-thumb';const img=document.createElement('img');img.src=src;img.alt='Image to send';const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Remove image');remove.onclick=()=>{selectedImages.splice(index,1);renderAttachmentPreview();updateComposerState()};item.append(img,remove);box.appendChild(item)})}
+function compressImage(file){return new Promise((resolve,reject)=>{if(!file.type.startsWith('image/'))return reject(new Error('Please select an image file.'));if(file.size>12*1024*1024)return reject(new Error('Choose an image smaller than 12 MB.'));const reader=new FileReader();reader.onerror=()=>reject(new Error('Could not read that image.'));reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('That image could not be opened.'));img.onload=()=>{const scale=Math.min(1,1400/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',0.78))};img.src=reader.result};reader.readAsDataURL(file)})}
+$('attachImage').onclick=()=>$('imageInput').click();
+$('imageInput').addEventListener('change',async e=>{const files=Array.from(e.target.files||[]);for(const file of files.slice(0,Math.max(0,4-selectedImages.length))){try{selectedImages.push(await compressImage(file))}catch(err){$('chatStatus').textContent=err.message}}$('imageInput').value='';renderAttachmentPreview();updateComposerState()});
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;let recognition=null;
+if(SpeechRecognition){recognition=new SpeechRecognition();recognition.lang='en-US';recognition.interimResults=false;recognition.maxAlternatives=1;recognition.onresult=e=>{$('prompt').value=($('prompt').value+' '+e.results[0][0].transcript).trim();updateComposerState()};recognition.onerror=()=>{$('chatStatus').textContent='Voice input could not start. Check microphone permission.'};recognition.onend=()=>{$('micButton').classList.remove('recording')}}
+$('micButton').onclick=()=>{if(!recognition){$('chatStatus').textContent='Voice input is not supported in this browser. You can still use Read aloud.';return}try{$('micButton').classList.add('recording');$('chatStatus').textContent='Listening… speak now';recognition.start()}catch{$('micButton').classList.remove('recording')}};
+
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{const tool=b.dataset.tool;$('prompt').placeholder=tool+' — describe what you need…';$('prompt').focus();$('sidebar').classList.remove('show')});
 document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=()=>{$('prompt').value=b.dataset.prompt;$('send').disabled=!currentUser;$('prompt').focus()});
 

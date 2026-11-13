@@ -364,6 +364,37 @@ body.light .appearance-choice{background:#f6f6f6!important;color:#222!important}
 @media(max-width:420px){.content{padding-left:12px;padding-right:12px}.bubble.user{max-width:90%}.topbar .login,.topbar .signup{padding:7px 11px;font-size:13px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 
+
+/* Sidebar refinement: compact history, app directory, settings and account dock */
+.sidebar{display:flex;flex-direction:column;gap:5px;overflow:hidden}
+.sidebar>.brand{flex:0 0 auto;padding-bottom:13px}
+.sidebar>.newchat{flex:0 0 auto}
+.sidebar>.recent-label{padding-top:17px}
+.sidebar>.history{flex:1 1 auto;min-height:72px;max-height:none}
+.sidebar>.apps-label{padding-top:12px}
+.sidebar>.workspace-nav{flex:0 0 auto}
+.sidebar .side-bottom{flex:0 0 auto;margin-top:10px;padding-top:9px;border-top:1px solid #282828}
+.sidebar .side-bottom .settings-trigger{margin-bottom:2px}
+.sidebar .profile{min-width:0;padding:8px 10px 7px}
+.sidebar .profile #sideUser{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.account-actions{display:flex;gap:8px;padding:2px 7px 3px}
+.account-actions button{flex:1;min-width:0;border-radius:9px;padding:8px 10px;font-size:13px}
+.account-actions .login{background:transparent;border:1px solid #454545;color:#eee}
+.account-actions .signup{background:#2f80ed;border:1px solid #2f80ed;color:#fff}
+.account-actions #logoutBtn{background:transparent;border:1px solid #454545;color:#eee}
+.topbar{justify-content:flex-start}
+@media(max-width:760px){
+ .sidebar{width:min(320px,88vw);padding:18px 13px 12px;gap:4px}
+ .sidebar>.brand{padding:3px 10px 12px}
+ .sidebar>.recent-label{padding-top:15px}
+ .sidebar>.history{max-height:none;min-height:55px}
+ .sidebar>.apps-label{padding-top:10px}
+ .sidebar .side-bottom{margin-top:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+ .sidebar .profile{padding-top:7px}
+ .account-actions button{min-height:38px}
+ .topbar{justify-content:flex-start}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -373,20 +404,24 @@ body.light .appearance-choice{background:#f6f6f6!important;color:#222!important}
 <aside class="sidebar" id="sidebar">
 <div class="brand">Riseverse<span>HQ</span></div>
 <button class="newchat" id="newChat"><span class="newchat-icon">＋</span> <span>New chat</span></button>
-<div class="side-label">WORKSPACE</div>
-<nav class="workspace-nav" aria-label="Workspace">
+<div class="side-label recent-label">CHAT HISTORY</div>
+<div class="history" id="historyList" aria-label="Recent conversations"></div>
+<div class="side-label apps-label">APPS &amp; WEBSITES</div>
+<nav class="workspace-nav" aria-label="Apps and websites">
 <button class="side-link active" data-tool="AI chat">✳ <span>AI assistant</span></button>
 <button class="side-link" id="openDeveloperStudio">⌘ <span>Developer Studio</span></button>
 <button class="side-link" data-tool="Writing studio">▤ <span>Writing studio</span></button>
 <button class="side-link" data-tool="Video ideas">▹ <span>Video ideas</span></button>
 <button class="side-link" data-tool="Learning hub">⌘ <span>Learning hub</span></button>
 </nav>
-<div class="side-label recent-label">RECENT CHATS</div>
-<div class="history" id="historyList"></div>
-<div class="side-bottom"><button class="settings-trigger" id="settingsBtn" type="button" aria-haspopup="dialog">⚙ <span>Settings</span></button><div class="profile"><div class="avatar">R</div><span id="sideUser">Guest account</span></div></div>
+<div class="side-bottom">
+<button class="settings-trigger" id="settingsBtn" type="button" aria-haspopup="dialog">⚙ <span>Personal settings</span></button>
+<div class="profile"><div class="avatar">R</div><span id="sideUser">Guest account</span></div>
+<div class="account-actions"><button class="login" id="loginBtn" type="button">Log in</button><button class="signup" id="signupBtn" type="button">Sign up</button><button class="login hide" id="logoutBtn" type="button">Log out</button></div>
+</div>
 </aside>
 <main class="main">
-<header class="topbar"><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><span class="signed hide" id="signedLabel"></span><button class="login" id="loginBtn">Log in</button><button class="signup" id="signupBtn">Sign up</button><button class="login hide" id="logoutBtn">Log out</button></header>
+<header class="topbar"><button class="mobile-menu" id="menu" aria-label="Open menu">☰</button><span class="signed hide" id="signedLabel"></span></header>
 <section class="content" id="content">
 <div class="mark">✳</div>
 <h1 id="greeting">What would you like to create?</h1>

@@ -680,9 +680,7 @@ supabase.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'
 async function activateUser(user){updateSession(user);await loadHistory()}
 $('logoutBtn').onclick=async()=>{await supabase.auth.signOut();currentChatId=null;messages=[];render();$('historyList').innerHTML='';updateSession(null)};
 supabase.auth.onAuthStateChange((_event,session)=>{activateUser(session?.user||null)});const {data:{session}}=await supabase.auth.getSession();await activateUser(session?.user||null);
-function closeMobileDrawer(){$('sidebar').classList.remove('show');document.body.classList.remove('drawer-open')}
-$('menu').onclick=()=>{const open=!$('sidebar').classList.contains('show');$('sidebar').classList.toggle('show',open);document.body.classList.toggle('drawer-open',open)};
-$('closeSidebar').onclick=closeMobileDrawer;$('sidebarBackdrop').onclick=closeMobileDrawer;
+// Sidebar interactions are handled once by the unified navigation controller below.
 $('newChat').onclick=async()=>{if(busy)return;await saveChat();currentChatId=null;messages=[];selectedImages=[];renderAttachmentPreview();render();$('greeting').textContent='What would you like to create?';$('prompt').value='';updateComposerState();$('prompt').focus();$('sidebar').classList.remove('show');await loadHistory()};
 $('send').onclick=sendMessage;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});$('prompt').addEventListener('input',updateComposerState);
 function renderAttachmentPreview(){const box=$('attachmentPreview');box.innerHTML='';selectedImages.forEach((src,index)=>{const item=document.createElement('div');item.className='attachment-thumb';const img=document.createElement('img');img.src=src;img.alt='Image to send';const remove=document.createElement('button');remove.type='button';remove.textContent='Ã';remove.setAttribute('aria-label','Remove image');remove.onclick=()=>{selectedImages.splice(index,1);renderAttachmentPreview();updateComposerState()};item.append(img,remove);box.appendChild(item)})}

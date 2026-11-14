@@ -412,6 +412,14 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 /* Mobile drawer repair */
 .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.drawer-head .brand{padding-left:8px}.drawer-close{display:none;border:1px solid #555;border-radius:8px;background:transparent;color:inherit;padding:8px 10px;font-size:13px}.sidebar-backdrop{display:none}
 @media(max-width:760px){.sidebar{width:min(86vw,320px);max-width:320px;overflow-y:auto;padding:14px 12px 18px;gap:10px;z-index:20}.drawer-close{display:block}.sidebar.show~.sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:19}.mobile-menu{display:block;padding:8px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-weight:600}.side-link,.newchat,.settings-trigger{min-height:46px;gap:0}.workspace-nav{display:grid;gap:5px}.side-label{padding-top:12px}body.drawer-open{overflow:hidden}}
+
+/* Mobile navigation repair: keep the workspace as the default view and remove decorative icon glyphs. */
+.workspace-nav .side-link::before,.workspace-nav .side-link::after,.newchat::before,.newchat::after,.settings-trigger::before,.settings-trigger::after{content:none!important;display:none!important}
+.workspace-nav .side-link svg,.workspace-nav .side-link i,.workspace-nav .side-link img,.newchat svg,.newchat i,.settings-trigger svg,.settings-trigger i{display:none!important}
+.workspace-nav .side-link,.newchat,.settings-trigger{font-family:inherit;text-indent:0;gap:0}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.drawer-close{display:none;border:1px solid #454545;border-radius:9px;background:transparent;color:inherit;padding:8px 10px;font-size:13px}
+@media(max-width:760px){.drawer-close{display:block}.sidebar{overflow-y:auto;overscroll-behavior:contain}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:5}.drawer-open .sidebar-backdrop{display:block}.sidebar.show{z-index:6}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -785,5 +793,16 @@ document.getElementById('openBilling').addEventListener('click',openBillingPage)
 document.getElementById('billingBack').addEventListener('click',()=>{billingPage.classList.add('hide');document.getElementById('content').classList.remove('hide');});
 billingPage.querySelectorAll('[data-plan]').forEach(button=>button.addEventListener('click',()=>startPaystackCheckout(button.dataset.plan)));
 if(new URLSearchParams(location.search).get('billing')==='return'){document.getElementById('content').classList.add('hide');billingPage.classList.remove('hide');document.getElementById('billingStatus').textContent='Paystack returned you to RiseverseHQ. Your plan will appear after the secure webhook verifies your payment.';refreshBillingStatus();}
+
+// Stable mobile navigation: the AI Assistant item always returns to the main workspace.
+const rvSidebar=$('sidebar'),rvContent=$('content'),rvBuilder=$('builderWorkspace'),rvSettings=$('settingsModal'),rvBilling=$('billingPage');
+function rvReturnToWorkspace(){rvSidebar?.classList.remove('show');document.body.classList.remove('drawer-open');rvSettings?.classList.remove('open');rvBilling?.classList.add('hide');rvBuilder?.classList.add('hide');rvContent?.classList.remove('hide');}
+const rvAiNav=document.querySelector('.workspace-nav [data-tool="AI chat"]');
+if(rvAiNav){rvAiNav.textContent='AI assistant';rvAiNav.removeAttribute('data-tool');rvAiNav.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();rvReturnToWorkspace();},{capture:true});}
+const rvNewChat=$('newChat');if(rvNewChat){rvNewChat.textContent='New chat';rvNewChat.addEventListener('click',rvReturnToWorkspace,{capture:true});}
+const rvDeveloperNav=$('openDeveloperStudio');if(rvDeveloperNav){rvDeveloperNav.textContent='Developer Studio';rvDeveloperNav.addEventListener('click',()=>{rvSidebar?.classList.remove('show');document.body.classList.remove('drawer-open');},{capture:true});}
+for(const [id,label] of [['openBilling','Plans & billing'],['settingsBtn','Personal settings']]){const el=$(id);if(el){el.textContent=label;el.addEventListener('click',()=>{rvSidebar?.classList.remove('show');document.body.classList.remove('drawer-open');},{capture:true});}}
+rvSettings?.classList.remove('open');document.getElementById('authModal')?.classList.remove('open');rvBuilder?.classList.add('hide');rvBilling?.classList.add('hide');rvContent?.classList.remove('hide');
+$('closeSidebar')?.addEventListener('click',rvReturnToWorkspace);document.addEventListener('keydown',e=>{if(e.key==='Escape')rvReturnToWorkspace()});
 </script>
 </body></html>

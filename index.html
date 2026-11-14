@@ -430,6 +430,12 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 }
 .workspace-nav *::before,.workspace-nav *::after,.newchat *::before,.newchat *::after,.side-bottom *::before,.side-bottom *::after{content:none!important;display:none!important}
 .workspace-nav .side-link,.newchat,.side-bottom button{font-variant-ligatures:none;text-indent:0}
+
+/* Unified sidebar visibility and close control across every viewport. */
+#closeSidebar{display:inline-flex!important;align-items:center;justify-content:center;min-height:42px;min-width:94px;padding:9px 12px;border:1px solid #777;border-radius:9px;background:#202a3b;color:#fff;font-size:14px;font-weight:650;cursor:pointer;pointer-events:auto;touch-action:manipulation;position:relative;z-index:50}
+#menu{display:inline-flex!important;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+@media(min-width:761px){.sidebar.closed{display:none!important}.sidebar-backdrop{display:none!important}}
+@media(max-width:760px){.sidebar,.sidebar.show{z-index:30!important;pointer-events:auto!important}.sidebar-backdrop{z-index:19!important}.drawer-head{position:relative;z-index:35}.sidebar.show~.sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:19}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -437,7 +443,7 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 <body>
 <div class="app">
 <aside class="sidebar" id="sidebar">
-<div class="drawer-head"><div class="brand">Riseverse<span>HQ</span></div><button type="button" id="closeSidebar" class="drawer-close" aria-label="Close menu" onclick="document.getElementById('sidebar').classList.remove('show');document.body.classList.remove('drawer-open')">Close menu</button></div>
+<div class="drawer-head"><div class="brand">Riseverse<span>HQ</span></div>\1>Close menu</button></div>
 <button class="newchat" id="newChat"><span>New chat</span></button>
 <div class="side-label recent-label">CHAT HISTORY</div>
 <div class="history" id="historyList" aria-label="Recent conversations"></div>
@@ -804,15 +810,58 @@ document.getElementById('billingBack').addEventListener('click',()=>{billingPage
 billingPage.querySelectorAll('[data-plan]').forEach(button=>button.addEventListener('click',()=>startPaystackCheckout(button.dataset.plan)));
 if(new URLSearchParams(location.search).get('billing')==='return'){document.getElementById('content').classList.add('hide');billingPage.classList.remove('hide');document.getElementById('billingStatus').textContent='Paystack returned you to RiseverseHQ. Your plan will appear after the secure webhook verifies your payment.';refreshBillingStatus();}
 
-// Stable mobile navigation: the AI Assistant item always returns to the main workspace.
-const rvSidebar=$('sidebar'),rvContent=$('content'),rvBuilder=$('builderWorkspace'),rvSettings=$('settingsModal'),rvBilling=$('billingPage');
-function rvReturnToWorkspace(){rvSidebar?.classList.remove('show');document.body.classList.remove('drawer-open');rvSettings?.classList.remove('open');rvBilling?.classList.add('hide');rvBuilder?.classList.add('hide');rvContent?.classList.remove('hide');}
+// RiseverseHQ unified navigation controller (desktop, tablet and mobile).
+const rvSidebar=document.getElementById('sidebar');
+const rvBackdrop=document.getElementById('sidebarBackdrop');
+const rvContent=document.getElementById('content');
+const rvBuilder=document.getElementById('builderWorkspace');
+const rvSettings=document.getElementById('settingsModal');
+const rvBilling=document.getElementById('billingPage');
+function rvCloseMenu(){
+  rvSidebar?.classList.remove('show','closed');
+  document.body.classList.remove('drawer-open');
+  if(rvBackdrop) rvBackdrop.setAttribute('aria-hidden','true');
+}
+function rvOpenMenu(){
+  rvSidebar?.classList.remove('closed');
+  rvSidebar?.classList.add('show');
+  document.body.classList.add('drawer-open');
+  if(rvBackdrop) rvBackdrop.setAttribute('aria-hidden','false');
+}
+function rvReturnToWorkspace(){
+  rvCloseMenu();
+  rvSettings?.classList.remove('open');
+  rvBilling?.classList.add('hide');
+  rvBuilder?.classList.add('hide');
+  rvContent?.classList.remove('hide');
+}
+// Start on the actual AI workspace; never leave a settings/auth overlay open on load.
+rvSettings?.classList.remove('open');
+document.getElementById('authModal')?.classList.remove('open');
+rvBuilder?.classList.add('hide');
+rvBilling?.classList.add('hide');
+rvContent?.classList.remove('hide');
+rvCloseMenu();
+// One capture-phase handler avoids competing inline and legacy handlers.
+document.addEventListener('click',function(e){
+  const close=e.target.closest('#closeSidebar');
+  const backdrop=e.target.closest('#sidebarBackdrop');
+  const menu=e.target.closest('#menu');
+  if(close||backdrop){e.preventDefault();e.stopImmediatePropagation();rvCloseMenu();return;}
+  if(menu){e.preventDefault();e.stopImmediatePropagation();
+    if(rvSidebar?.classList.contains('show')||(!window.matchMedia('(max-width: 760px)').matches&&!rvSidebar?.classList.contains('closed'))) rvCloseMenu();
+    else rvOpenMenu();
+    return;
+  }
+  const ai=e.target.closest('.workspace-nav [data-tool="AI chat"],.workspace-nav .rv-ai-home');
+  if(ai){e.preventDefault();e.stopImmediatePropagation();rvReturnToWorkspace();return;}
+  if(rvSidebar?.contains(e.target) && window.matchMedia('(max-width: 760px)').matches && e.target.closest('a,button')){
+    if(!e.target.closest('#menu,#closeSidebar')) rvCloseMenu();
+  }
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')rvReturnToWorkspace();});
 const rvAiNav=document.querySelector('.workspace-nav [data-tool="AI chat"]');
-if(rvAiNav){rvAiNav.textContent='AI assistant';rvAiNav.removeAttribute('data-tool');rvAiNav.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();rvReturnToWorkspace();},{capture:true});}
-const rvNewChat=$('newChat');if(rvNewChat){rvNewChat.textContent='New chat';rvNewChat.addEventListener('click',rvReturnToWorkspace,{capture:true});}
-const rvDeveloperNav=$('openDeveloperStudio');if(rvDeveloperNav){rvDeveloperNav.textContent='Developer Studio';rvDeveloperNav.addEventListener('click',()=>{rvSidebar?.classList.remove('show');document.body.classList.remove('drawer-open');},{capture:true});}
-for(const [id,label] of [['openBilling','Plans & billing'],['settingsBtn','Personal settings']]){const el=$(id);if(el){el.textContent=label;el.addEventListener('click',()=>{rvSidebar?.classList.remove('show');document.body.classList.remove('drawer-open');},{capture:true});}}
-rvSettings?.classList.remove('open');document.getElementById('authModal')?.classList.remove('open');rvBuilder?.classList.add('hide');rvBilling?.classList.add('hide');rvContent?.classList.remove('hide');
-$('closeSidebar')?.addEventListener('click',rvReturnToWorkspace);document.addEventListener('keydown',e=>{if(e.key==='Escape')rvReturnToWorkspace()});
+if(rvAiNav){rvAiNav.textContent='AI assistant';rvAiNav.classList.add('rv-ai-home');rvAiNav.removeAttribute('data-tool');}
+for(const [id,label] of [['openBilling','Plans & billing'],['settingsBtn','Personal settings'],['openDeveloperStudio','Developer Studio']]){const el=document.getElementById(id);if(el)el.textContent=label;}
 </script>
 </body></html>

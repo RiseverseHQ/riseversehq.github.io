@@ -419,7 +419,17 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 .workspace-nav .side-link,.newchat,.settings-trigger{font-family:inherit;text-indent:0;gap:0}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .drawer-close{display:none;border:1px solid #454545;border-radius:9px;background:transparent;color:inherit;padding:8px 10px;font-size:13px}
-@media(max-width:760px){.drawer-close{display:block}.sidebar{overflow-y:auto;overscroll-behavior:contain}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:5}.drawer-open .sidebar-backdrop{display:block}.sidebar.show{z-index:6}}
+@media(max-width:760px){.drawer-close{display:block}.sidebar{overflow-y:auto;overscroll-behavior:contain}.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:5}.drawer-open .sidebar-backdrop{display:block}.sidebar.show{z-index:30}}
+
+/* Final mobile drawer stacking and clean labels */
+@media(max-width:760px){
+  .sidebar,.sidebar.show{z-index:30!important;pointer-events:auto!important}
+  .sidebar-backdrop,.sidebar.show~.sidebar-backdrop{z-index:19!important}
+  #closeSidebar.drawer-close{display:flex!important;align-items:center;justify-content:center;position:relative;z-index:40!important;min-height:42px;min-width:94px;padding:9px 12px;border:1px solid #777;border-radius:9px;background:#202a3b;color:#fff;font-size:14px;font-weight:650;cursor:pointer;pointer-events:auto!important;touch-action:manipulation}
+  .drawer-head{position:relative;z-index:35;min-height:48px}
+}
+.workspace-nav *::before,.workspace-nav *::after,.newchat *::before,.newchat *::after,.side-bottom *::before,.side-bottom *::after{content:none!important;display:none!important}
+.workspace-nav .side-link,.newchat,.side-bottom button{font-variant-ligatures:none;text-indent:0}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -427,7 +437,7 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 <body>
 <div class="app">
 <aside class="sidebar" id="sidebar">
-<div class="drawer-head"><div class="brand">Riseverse<span>HQ</span></div><button type="button" id="closeSidebar" class="drawer-close">Close menu</button></div>
+<div class="drawer-head"><div class="brand">Riseverse<span>HQ</span></div><button type="button" id="closeSidebar" class="drawer-close" aria-label="Close menu" onclick="document.getElementById('sidebar').classList.remove('show');document.body.classList.remove('drawer-open')">Close menu</button></div>
 <button class="newchat" id="newChat"><span>New chat</span></button>
 <div class="side-label recent-label">CHAT HISTORY</div>
 <div class="history" id="historyList" aria-label="Recent conversations"></div>

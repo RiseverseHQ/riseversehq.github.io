@@ -408,6 +408,10 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 @media(max-width:360px){.welcome-orb{right:-8%;opacity:.65}.welcome-copy{max-width:83%}.welcome-copy h1{font-size:30px!important}.quick-grid{grid-template-columns:1fr}.access-card{min-height:68px}}
 \n
 .billing-page{width:min(960px,calc(100% - 32px));margin:28px auto 70px;color:var(--text)}.billing-head h1{font-size:30px;margin:0 0 8px}.billing-head p,.billing-note{color:var(--muted);line-height:1.55}.billing-summary{border:1px solid var(--line);border-radius:16px;padding:18px;margin:22px 0;background:var(--panel)}.billing-summary strong{font-size:22px}.billing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.billing-card{border:1px solid var(--line);border-radius:16px;padding:20px;background:var(--panel);display:flex;flex-direction:column;gap:12px}.billing-card h2{margin:0;font-size:19px}.billing-price{font-size:26px;font-weight:750}.billing-card p{color:var(--muted);font-size:13px;line-height:1.5;min-height:42px}.billing-card button,.billing-back{border:1px solid var(--text);background:var(--text);color:var(--bg);border-radius:9px;padding:11px 14px;font-weight:650}.billing-card button:disabled{opacity:.55}.billing-status{min-height:22px;color:var(--muted);margin:16px 0}.billing-back{margin-bottom:20px;background:transparent;color:var(--text)}@media(max-width:600px){.billing-head h1{font-size:25px}.billing-card p{min-height:0}}
+
+/* Mobile drawer repair */
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.drawer-head .brand{padding-left:8px}.drawer-close{display:none;border:1px solid #555;border-radius:8px;background:transparent;color:inherit;padding:8px 10px;font-size:13px}.sidebar-backdrop{display:none}
+@media(max-width:760px){.sidebar{width:min(86vw,320px);max-width:320px;overflow-y:auto;padding:14px 12px 18px;gap:10px;z-index:20}.drawer-close{display:block}.sidebar.show~.sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:19}.mobile-menu{display:block;padding:8px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-weight:600}.side-link,.newchat,.settings-trigger{min-height:46px;gap:0}.workspace-nav{display:grid;gap:5px}.side-label{padding-top:12px}body.drawer-open{overflow:hidden}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -415,27 +419,28 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 <body>
 <div class="app">
 <aside class="sidebar" id="sidebar">
-<div class="brand">Riseverse<span>HQ</span></div>
-<button class="newchat" id="newChat"><span class="newchat-icon">ï¼</span> <span>New chat</span></button>
+<div class="drawer-head"><div class="brand">Riseverse<span>HQ</span></div><button type="button" id="closeSidebar" class="drawer-close">Close menu</button></div>
+<button class="newchat" id="newChat"><span>New chat</span></button>
 <div class="side-label recent-label">CHAT HISTORY</div>
 <div class="history" id="historyList" aria-label="Recent conversations"></div>
 <div class="side-label apps-label">APPS &amp; WEBSITES</div>
 <nav class="workspace-nav" aria-label="Apps and websites">
-<button class="side-link active" data-tool="AI chat">â³ <span>AI assistant</span></button>
-<button class="side-link" id="openDeveloperStudio">â <span>Developer Studio</span></button>
-<button class="side-link" data-tool="Writing studio">â¤ <span>Writing studio</span></button>
-<button class="side-link" data-tool="Video ideas">â¹ <span>Video ideas</span></button>
-<button class="side-link" data-tool="Learning hub">â <span>Learning hub</span></button>
+<button class="side-link active" data-tool="AI chat"><span>AI assistant</span></button>
+<button class="side-link" id="openDeveloperStudio"><span>Developer Studio</span></button>
+<button class="side-link" data-tool="Writing studio"><span>Writing studio</span></button>
+<button class="side-link" data-tool="Video ideas"><span>Video ideas</span></button>
+<button class="side-link" data-tool="Learning hub"><span>Learning hub</span></button>
 </nav>
 <button class="side-link" id="openBilling">₦ <span>Plans & billing</span></button>
 <div class="side-bottom">
-<button class="settings-trigger" id="settingsBtn" type="button" aria-haspopup="dialog">â <span>Personal settings</span></button>
+<button class="settings-trigger" id="settingsBtn" type="button" aria-haspopup="dialog"><span>Personal settings</span></button>
 <div class="profile"><div class="avatar">R</div><span id="sideUser">Guest account</span></div>
 <div class="account-actions"><button class="login" id="loginBtn" type="button">Log in</button><button class="signup" id="signupBtn" type="button">Sign up</button><button class="login hide" id="logoutBtn" type="button">Log out</button></div>
 </div>
 </aside>
+<div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
 <main class="main">
-<header class="topbar"><button class="mobile-menu" id="menu" aria-label="Open menu">â°</button><span class="signed hide" id="signedLabel"></span></header>
+<header class="topbar"><button class="mobile-menu" id="menu" aria-label="Open menu">Menu</button><span class="signed hide" id="signedLabel"></span></header>
 <section class="content" id="content">
 <div class="home-welcome" id="homeWelcome"><div class="welcome-copy"><span class="welcome-kicker">EXPLORE. CREATE. GROW.</span><h1>Welcome to<br><span>RiseverseHQ</span></h1><p>Your AI-powered workspace for ideas, productivity and endless possibilities.</p></div><div class="welcome-orb" aria-hidden="true"><div class="orb-ring"></div><div class="orb-face"><i></i><i></i><b></b></div></div></div>\n<h1 id="greeting" class="sr-only">What would you like to create?</h1><p class="sub sr-only">A simpler space to think, write, learn and build.</p>\n<div class="chatlog" id="chatLog" aria-live="polite"></div><div class="composer">
 <div id="attachmentPreview" class="attachment-preview" aria-live="polite"></div>
@@ -641,7 +646,7 @@ async function sendMessage(){
     await saveChat();$('chatStatus').textContent='Chat request failed â please try again';
   }finally{busy=false;updateComposerState()}
 }
-$('signupBtn').onclick=()=>openAuth('signup');$('loginBtn').onclick=()=>openAuth('login');$('closeModal').onclick=()=>$('authModal').classList.remove('open');$('authModal').addEventListener('click',e=>{if(e.target===$('authModal'))$('authModal').classList.remove('open')});$('switchMode').onclick=()=>openAuth(mode==='signup'?'login':'signup');
+$('signupBtn').onclick=()=>{closeMobileDrawer();openAuth('signup')};$('loginBtn').onclick=()=>{closeMobileDrawer();openAuth('login')};$('closeModal').onclick=()=>$('authModal').classList.remove('open');$('authModal').addEventListener('click',e=>{if(e.target===$('authModal'))$('authModal').classList.remove('open')});$('switchMode').onclick=()=>openAuth(mode==='signup'?'login':'signup');
 $('authForm').onsubmit=async e=>{e.preventDefault();const email=$('email').value.trim(),password=$('password').value;$('authSubmit').disabled=true;$('authMessage').className='message';$('authMessage').textContent=mode==='signup'?'Creating your accountâ¦':mode==='recovery'?'Updating your passwordâ¦':'Logging inâ¦';try{let result;if(mode==='signup')result=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin}});else if(mode==='recovery')result=await supabase.auth.updateUser({password});else result=await supabase.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(mode==='signup'&&!result.data.session){$('authMessage').textContent='Account request received, but email confirmation is required. If no confirmation email arrives, contact support because email delivery is not configured yet.';$('authForm').reset()}else if(mode==='recovery'){$('authMessage').textContent='Password updated. You can now log in with your new password.';mode='login';$('authTitle').textContent='Password updated';$('authSubmit').textContent='Log in';$('password').value='';$('forgotPassword').classList.remove('hide')}else{$('authMessage').textContent='You are signed in.';await activateUser(result.data.user);setTimeout(()=>$('authModal').classList.remove('open'),700)}}catch(err){$('authMessage').className='message error';$('authMessage').textContent=err.message||'Something went wrong. Please try again.'}finally{$('authSubmit').disabled=false}};
 $('forgotPassword').onclick=async()=>{const email=$('email').value.trim();if(!email){$('authMessage').className='message error';$('authMessage').textContent='Enter your account email address first.';return}$('authMessage').className='message';$('authMessage').textContent='Requesting a password resetâ¦';try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/?reset=1'});if(error)throw error;$('authMessage').textContent='If email delivery is configured, a reset link will arrive shortly. Check your inbox and spam folder.'}catch(err){$('authMessage').className='message error';$('authMessage').textContent=err.message||'Password reset could not be sent.'}};
 for(const [id,provider] of [['googleAuth','google'],['facebookAuth','facebook'],['appleAuth','apple']])$(id).onclick=async()=>{try{const {error}=await supabase.auth.signInWithOAuth({provider,options:{redirectTo:location.origin}});if(error)throw error}catch(err){$('authMessage').className='message error';$('authMessage').textContent=provider[0].toUpperCase()+provider.slice(1)+' sign-in is not configured in Supabase yet. Add its OAuth client ID and secret first.'}};
@@ -651,7 +656,10 @@ supabase.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'
 async function activateUser(user){updateSession(user);await loadHistory()}
 $('logoutBtn').onclick=async()=>{await supabase.auth.signOut();currentChatId=null;messages=[];render();$('historyList').innerHTML='';updateSession(null)};
 supabase.auth.onAuthStateChange((_event,session)=>{activateUser(session?.user||null)});const {data:{session}}=await supabase.auth.getSession();await activateUser(session?.user||null);
-$('menu').onclick=()=>$('sidebar').classList.toggle('show');$('newChat').onclick=async()=>{if(busy)return;await saveChat();currentChatId=null;messages=[];selectedImages=[];renderAttachmentPreview();render();$('greeting').textContent='What would you like to create?';$('prompt').value='';updateComposerState();$('prompt').focus();$('sidebar').classList.remove('show');await loadHistory()};
+function closeMobileDrawer(){$('sidebar').classList.remove('show');document.body.classList.remove('drawer-open')}
+$('menu').onclick=()=>{const open=!$('sidebar').classList.contains('show');$('sidebar').classList.toggle('show',open);document.body.classList.toggle('drawer-open',open)};
+$('closeSidebar').onclick=closeMobileDrawer;$('sidebarBackdrop').onclick=closeMobileDrawer;
+$('newChat').onclick=async()=>{if(busy)return;await saveChat();currentChatId=null;messages=[];selectedImages=[];renderAttachmentPreview();render();$('greeting').textContent='What would you like to create?';$('prompt').value='';updateComposerState();$('prompt').focus();$('sidebar').classList.remove('show');await loadHistory()};
 $('send').onclick=sendMessage;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});$('prompt').addEventListener('input',updateComposerState);
 function renderAttachmentPreview(){const box=$('attachmentPreview');box.innerHTML='';selectedImages.forEach((src,index)=>{const item=document.createElement('div');item.className='attachment-thumb';const img=document.createElement('img');img.src=src;img.alt='Image to send';const remove=document.createElement('button');remove.type='button';remove.textContent='Ã';remove.setAttribute('aria-label','Remove image');remove.onclick=()=>{selectedImages.splice(index,1);renderAttachmentPreview();updateComposerState()};item.append(img,remove);box.appendChild(item)})}
 function compressImage(file){return new Promise((resolve,reject)=>{if(!file.type.startsWith('image/'))return reject(new Error('Please select an image file.'));if(file.size>12*1024*1024)return reject(new Error('Choose an image smaller than 12 MB.'));const reader=new FileReader();reader.onerror=()=>reject(new Error('Could not read that image.'));reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('That image could not be opened.'));img.onload=()=>{const scale=Math.min(1,2000/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const context=canvas.getContext('2d');if(!context)return reject(new Error('Could not prepare that image.'));context.imageSmoothingEnabled=true;context.imageSmoothingQuality='high';context.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',0.88))};img.src=reader.result};reader.readAsDataURL(file)})}
@@ -688,7 +696,7 @@ themeToggle?.addEventListener('click',()=>{
 // Workspace settings: appearance and account shortcut.
 const settingsModal=$('settingsModal');
 function closeSettings(){settingsModal?.classList.remove('open')}
-$('settingsBtn')?.addEventListener('click',()=>{const account=$('settingsAccount');if(account)account.textContent=currentUser?('Signed in as '+(currentUser.email||'your account')):'You are using RiseverseHQ as a guest.';$('settingsAuthAction').textContent=currentUser?'Manage sign-in / log out â':'Log in or create an account â';settingsModal?.classList.add('open');document.querySelectorAll('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===(document.body.classList.contains('light')?'light':'dark')))});
+$('settingsBtn')?.addEventListener('click',()=>{closeMobileDrawer();const account=$('settingsAccount');if(account)account.textContent=currentUser?('Signed in as '+(currentUser.email||'your account')):'You are using RiseverseHQ as a guest.';$('settingsAuthAction').textContent=currentUser?'Manage sign-in / log out â':'Log in or create an account â';settingsModal?.classList.add('open');document.querySelectorAll('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===(document.body.classList.contains('light')?'light':'dark')))});
 $('closeSettings')?.addEventListener('click',closeSettings);
 $('backSettings')?.addEventListener('click',closeSettings);
 settingsModal?.addEventListener('click',e=>{if(e.target===settingsModal)closeSettings()});

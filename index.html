@@ -818,7 +818,12 @@ const rvBuilder=document.getElementById('builderWorkspace');
 const rvSettings=document.getElementById('settingsModal');
 const rvBilling=document.getElementById('billingPage');
 function rvCloseMenu(){
-  rvSidebar?.classList.remove('show','closed');
+  rvSidebar?.classList.remove('show');
+  if(window.matchMedia('(max-width: 760px)').matches){
+    rvSidebar?.classList.remove('closed');
+  }else{
+    rvSidebar?.classList.add('closed');
+  }
   document.body.classList.remove('drawer-open');
   if(rvBackdrop) rvBackdrop.setAttribute('aria-hidden','true');
 }

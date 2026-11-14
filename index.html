@@ -436,6 +436,10 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 #menu{display:inline-flex!important;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
 @media(min-width:761px){.sidebar.closed{display:none!important}.sidebar-backdrop{display:none!important}}
 @media(max-width:760px){.sidebar,.sidebar.show{z-index:30!important;pointer-events:auto!important}.sidebar-backdrop{z-index:19!important}.drawer-head{position:relative;z-index:35}.sidebar.show~.sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:19}}
+
+/* Modal visibility: overlays are hidden unless explicitly opened. */
+.modal{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.62);overflow-y:auto}
+.modal.open{display:flex}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
@@ -816,24 +820,27 @@ const rvBuilder=document.getElementById('builderWorkspace');
 const rvSettings=document.getElementById('settingsModal');
 const rvBilling=document.getElementById('billingPage');
 function rvCloseMenu(){
-  rvSidebar?.classList.remove('show');
-  if(window.matchMedia('(max-width: 760px)').matches){
-    rvSidebar?.classList.remove('closed');
-  }else{
-    rvSidebar?.classList.add('closed');
-  }
+  if(!rvSidebar) return;
+  rvSidebar.classList.remove('show');
+  rvSidebar.style.display='none';
+  rvSidebar.classList.add('closed');
   document.body.classList.remove('drawer-open');
+  document.getElementById('menu')?.setAttribute('aria-expanded','false');
   if(rvBackdrop) rvBackdrop.setAttribute('aria-hidden','true');
 }
 function rvOpenMenu(){
-  rvSidebar?.classList.remove('closed');
-  rvSidebar?.classList.add('show');
+  if(!rvSidebar) return;
+  rvSidebar.style.display='flex';
+  rvSidebar.classList.remove('closed');
+  rvSidebar.classList.add('show');
   document.body.classList.add('drawer-open');
+  document.getElementById('menu')?.setAttribute('aria-expanded','true');
   if(rvBackdrop) rvBackdrop.setAttribute('aria-hidden','false');
 }
 function rvReturnToWorkspace(){
   rvCloseMenu();
   rvSettings?.classList.remove('open');
+  rvSidebar && (rvSidebar.style.display='none');
   rvBilling?.classList.add('hide');
   rvBuilder?.classList.add('hide');
   rvContent?.classList.remove('hide');
@@ -845,6 +852,9 @@ rvBuilder?.classList.add('hide');
 rvBilling?.classList.add('hide');
 rvContent?.classList.remove('hide');
 rvCloseMenu();
+// Explicit close control for touch and mouse; safe alongside the delegated navigation handler.
+document.getElementById('closeSidebar')?.addEventListener('pointerup',function(e){e.preventDefault();rvCloseMenu();});
+document.getElementById('closeSidebar')?.addEventListener('click',function(e){e.preventDefault();rvCloseMenu();});
 // One capture-phase handler avoids competing inline and legacy handlers.
 document.addEventListener('click',function(e){
   const close=e.target.closest('#closeSidebar');

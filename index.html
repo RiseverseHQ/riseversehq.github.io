@@ -444,6 +444,18 @@ body,.app{background:#070b16!important;color:#f7f8ff!important}.sidebar{backgrou
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+<style id="riseverse-chat-scroll-fix">
+/* Keep the conversation as the flexible, independently scrollable region. */
+.main{min-height:0;height:100dvh;overflow:hidden}
+.content{min-height:0;min-width:0;overflow:hidden}
+.content:has(.bubble) .chatlog{display:flex;flex:1 1 0%;height:0;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;-webkit-overflow-scrolling:touch}
+@media(max-width:760px){
+  .main{height:100dvh;min-height:0;overflow:hidden}
+  .content{height:calc(100dvh - 54px);min-height:0;flex:1 1 0%;padding-top:4px;padding-bottom:12px;overflow:hidden}
+  .content:has(.bubble) .chatlog{flex:1 1 0%;height:0;min-height:0;max-height:none;padding-bottom:16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .content:has(.bubble) .composer{flex:0 0 auto;margin-top:0}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -576,7 +588,7 @@ function render(){
     }
     log.appendChild(el);
   });
-  log.scrollTop=log.scrollHeight;
+  requestAnimationFrame(()=>{log.scrollTop=log.scrollHeight;});
 }
 function addMessage(role,content,images=[]){messages.push({role,content,images});render()}
 async function loadHistory(){
